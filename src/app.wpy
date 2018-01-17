@@ -12,6 +12,20 @@
 <script>
 import wepy from 'wepy'
 import 'wepy-async-function'
+import AV from './utils/av-weapp-min'
+import user from './cloud/user'
+
+// DEV
+AV.init({
+  appId: 'dHMtEcCm3jlfpRwRBzFvTATg-gzGzoHsz',
+  appKey: '1gKH7vubIldeiHhvQXqpAuaK',
+})
+
+// PROD
+//AV.init({
+//  appId: 'L3Cae9l7aornoukXME6ycMFD-gzGzoHsz',
+//  appKey: 'lH7LPYtJJLJjMnz2MHWrCmKz',
+//})
 
 export default class extends wepy.app {
   config = {
@@ -23,7 +37,8 @@ export default class extends wepy.app {
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
       navigationBarTextStyle: 'black'
-    }
+    },
+    debug: true
   }
 
   globalData = {
@@ -33,6 +48,7 @@ export default class extends wepy.app {
   constructor () {
     super()
     this.use('requestfix')
+    this.use('promisify')
   }
 
   onLaunch() {
@@ -52,17 +68,22 @@ export default class extends wepy.app {
     console.log(data)
   }
 
-  getUserInfo(cb) {
-    const that = this
-    if (this.globalData.userInfo) {
-      return this.globalData.userInfo
+  async getUserInfo() {
+    let userInfo = this.globalData.userInfo
+    if (userInfo) {
+      return userInfo
     }
-    wepy.getUserInfo({
-      success (res) {
-        that.globalData.userInfo = res.userInfo
-        cb && cb(res.userInfo)
-      }
-    })
+    let wepyUser = await user.userLogin()
+    this.globalData.userInfo = wepyUser
+    return wepyUser
+  }
+
+  async reloadUserInfo() {
+    let userId = this.globalData.userInfo.id
+    if (!userId) {
+      return
+    }
+    this.globalData.userInfo = await user.fetchUserInfo({userId})
   }
 }
 </script>

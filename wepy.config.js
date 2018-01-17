@@ -28,6 +28,8 @@ module.exports = {
     babel: {
       sourceMap: true,
       presets: [
+        'es2015',
+        'stage-1',
         'env'
       ],
       plugins: [
