@@ -22,7 +22,11 @@ export default class user {
         encryptedData: wepyUser.encryptedData,
         iv: wepyUser.iv
       })
-      await AV.User.signUpOrlogInWithAuthData(authData, 'lc_weapp_union')
+      if (authData.uid) {
+        await AV.User.signUpOrlogInWithAuthData(authData, 'lc_weapp_union')
+      } else {
+        await AV.User.loginWithWeapp()
+      }
       let wepyUserInfo = wepyUser.userInfo
       if (!wepyUserInfo) {
         return undefined
