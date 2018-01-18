@@ -1,0 +1,87 @@
+@import "vars";
+
+button[type="primary"]{
+  background-color: @color-primary;
+}
+
+.button-hover[type="primary"]{
+  background-color: @color-secondary;
+}
+
+.flex {
+  flex: 1;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.items-start {
+  align-items: flex-start;
+}
+
+.items-end {
+  align-items: flex-end;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-around {
+  justify-content: space-around;
+}
+
+.toolbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: @toolbar-height;
+  background: #fcfcfc;
+}
+
+.toolbar-bottom {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.toolbar-fontsize {
+  font-size: 8px;
+}
+
+.toolbar-fontsize-selected {
+  font-size: 8px;
+  color: @color-primary;
+}
+
+.has-toolbar {
+  margin-bottom: @toolbar-height;
+}

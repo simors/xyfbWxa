@@ -1,12 +1,24 @@
 <style lang="less">
-.container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-}
+  @import "./styles/vars.less";
+  @import "./styles/base.less";
+  @import "./styles/form.less";
+
+  .container {
+    background: @color-primary;
+    overflow: hidden;
+    min-height: 100vh;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .container::before {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #e2e2e2;
+    z-index: 5;
+  }
 </style>
 
 <script>
@@ -19,13 +31,13 @@ import user from './cloud/user'
 AV.init({
   appId: 'dHMtEcCm3jlfpRwRBzFvTATg-gzGzoHsz',
   appKey: '1gKH7vubIldeiHhvQXqpAuaK',
-})
+});
 
 // PROD
 //AV.init({
 //  appId: 'L3Cae9l7aornoukXME6ycMFD-gzGzoHsz',
 //  appKey: 'lH7LPYtJJLJjMnz2MHWrCmKz',
-//})
+//});
 
 export default class extends wepy.app {
   config = {
@@ -33,10 +45,11 @@ export default class extends wepy.app {
       'pages/index'
     ],
     window: {
-      backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
+      navigationBarTitleText: '幸运福包',
+      navigationBarBackgroundColor: '#F7680B',
+      navigationBarTextStyle: 'white',
+      backgroundColor: '#FFF4E6',
+      enablePullDownRefresh: true
     },
     debug: true
   }
@@ -52,20 +65,6 @@ export default class extends wepy.app {
   }
 
   onLaunch() {
-    this.testAsync()
-  }
-
-  sleep (s) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('promise resolved')
-      }, s * 1000)
-    })
-  }
-
-  async testAsync () {
-    const data = await this.sleep(3)
-    console.log(data)
   }
 
   async getUserInfo() {
