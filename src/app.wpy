@@ -43,7 +43,8 @@ AV.init({
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/index'
+        'pages/index',
+        'pages/redEnvelopShare'
     ],
     window: {
       navigationBarTitleText: '幸运福包',

@@ -128,7 +128,7 @@
     </view>
 
     <view class="btn-view">
-      <button class="fb-btn">
+      <button class="fb-btn" @tap.stop="createRedEnvelop">
         <view class="flex-row flex items-center justify-center">
           <image class="fb-btn-icon" src="/asset/png/home_red_envelopes.png"/>
           <text class="fb-btn-text">塞钱进福包</text>
@@ -215,6 +215,10 @@
 
       remarkChange(e) {
         this.remark = this.remarkPicker[e.detail.value]
+      },
+
+      createRedEnvelop() {
+        this.$navigate({url: '/pages/redEnvelopShare?redEnvlopNum=' + this.count + '&remark=' + this.remark})
       }
     }
 

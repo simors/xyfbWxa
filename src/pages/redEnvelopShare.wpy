@@ -1,0 +1,113 @@
+<style lang="less">
+  @import "../styles/vars.less";
+
+  .header-img-view {
+    background: @bg-color;
+    padding: 24rpx 0;
+    position: relative;
+  }
+
+  .header-img {
+    width: 100%;
+  }
+
+  .tip-view {
+    position: absolute;
+    bottom: 150rpx;
+    left: 50%;
+    width: 240rpx;
+    margin-left: -190rpx;
+    background: rgba(253, 232, 8, 0.8);
+    border-radius: 30rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16rpx 72rpx;
+
+  }
+  
+  .tip-text {
+    font-size: 14px;
+    color: #F20D2D;
+    font-weight: bold;
+  }
+
+  .share-bottom-img-view {
+    position: relative;
+    top: -5rpx;
+  }
+
+  .share-bottom-img {
+    width: 100%;
+  }
+
+  .btn-view {
+    margin-top: 48rpx;
+    padding: 0 100rpx;
+  }
+</style>
+<template>
+  <view class="container">
+    <pageFooter/>
+
+    <view class="header-img-view">
+      <image class="header-img" src="/asset/png/share_bg.png" mode="widthFix"/>
+      <view class="tip-view">
+        <text class="tip-text">共{{number}}个福包</text>
+      </view>
+    </view>
+    <view class="share-bottom-img-view">
+      <image class="share-bottom-img" src="/asset/png/home_edge.png" mode="widthFix" />
+    </view>
+
+    <view class="btn-view">
+      <button class="fb-btn" open-type="share">
+        <view class="flex-row flex items-center justify-center">
+          <image class="fb-btn-icon" src="/asset/png/share.png"/>
+          <text class="fb-btn-text">发福包给好友</text>
+        </view>
+      </button>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import PageFooter from '../components/pageFooter'
+  import Tips from '../utils/Tips'
+
+  export default class RedEnvelopShare extends wepy.page {
+    config = {
+      navigationBarTitleText: '幸运福包',
+      enablePullDownRefresh: false
+    }
+    components = {
+      pageFooter: PageFooter
+    }
+
+    data = {
+      number: 0,
+      remark: '恭喜发财，大吉大利'
+    }
+
+    computed = {
+    }
+
+    methods = {
+    }
+
+    events = {
+    }
+
+    onShareAppMessage () {
+      const title = this.remark;
+      const url = '/pages/index';
+      return Tips.share(title, url, title);
+    }
+
+    onLoad(option) {
+      this.number = option.redEnvlopNum
+      this.remark = option.remark
+    }
+  }
+</script>
