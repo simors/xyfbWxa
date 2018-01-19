@@ -12,12 +12,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 20rpx;
     margin-bottom: 8rpx;
   }
 
   .amount-text {
-    font-size: 38px;
+    font-size: 28px;
     color: @font-color;
     line-height: 40px;
   }
@@ -25,7 +24,7 @@
   .input-bottom-img-view {
     padding: 0 32rpx;
     position: relative;
-    top: -15rpx;
+    top: -25rpx;
   }
 
   .input-bottom-img {
@@ -41,7 +40,7 @@
             <text class="fb-form-tip">红包金额</text>
           </view>
           <view class="fb-form-content">
-            <input class="fb-form-input" placeholder="输入金额" type="digit"/>
+            <input class="fb-form-input" value="{{amount}}" placeholder="0.00" type="digit" @input="amountInput"/>
             <text class="fb-form-tip">元</text>
           </view>
         </view>
@@ -50,7 +49,7 @@
             <text class="fb-form-tip">红包个数</text>
           </view>
           <view class="fb-form-content">
-            <input class="fb-form-input" placeholder="输入数量" type="number"/>
+            <input class="fb-form-input" placeholder="填写个数" type="number" @input="countInput"/>
             <text class="fb-form-tip">个</text>
           </view>
         </view>
@@ -59,13 +58,13 @@
             <text class="fb-form-tip">祝福留言</text>
           </view>
           <view class="fb-form-content">
-            <input class="fb-form-input" placeholder="恭喜发财，大吉大利"/>
+            <input class="fb-form-input" placeholder="恭喜发财，大吉大利" @input="remarkInput"/>
             <text class="fb-form-tip">个</text>
           </view>
         </view>
       </view>
       <view class="amount-text-view">
-        <text class="amount-text">¥ {{amount}}</text>
+        <text class="amount-text">¥{{amount ? amount : '0.00'}}</text>
       </view>
     </view>
     <view class="input-bottom-img-view">
@@ -86,7 +85,7 @@
     }
 
     data = {
-      amount: 0.00,
+      amount: null,
       count: 0,
       remark: ''
     }
@@ -95,7 +94,33 @@
     }
 
     methods = {
+      amountInput(e) {
+        let value = e.detail.value
+        if ('' === value) {
+          this.amount = null
+          return
+        }
+        let pos = value.indexOf('.')
+        if (value[value.length-1] === '.' && pos != value.length-1) {
+          this.$apply()
+          return this.amount
+        }
+        let dig = value.split('.')
+        if (dig[1] && dig[1].length > 2) {
+          this.$apply()
+          return this.amount
+        }
+        this.amount = value
+        this.$apply()
+      },
 
+      countInput(e) {
+        this.count = e.detail.value
+      },
+
+      remarkInput(e) {
+        this.remark = e.detail.value
+      }
     }
 
     events = {
