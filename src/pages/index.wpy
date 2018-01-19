@@ -30,6 +30,11 @@
   .input-bottom-img {
     width: 100%;
   }
+
+  .arrow-img {
+    width: 24px;
+    height: 24px;
+  }
 </style>
 <template>
   <view class="container">
@@ -58,8 +63,12 @@
             <text class="fb-form-tip">祝福留言</text>
           </view>
           <view class="fb-form-content">
-            <input class="fb-form-input" placeholder="恭喜发财，大吉大利" @input="remarkInput"/>
-            <text class="fb-form-tip">个</text>
+            <input class="fb-form-input" value="{{remark}}" placeholder="恭喜发财，大吉大利" @input="remarkInput"/>
+            <picker bindchange="remarkChange" value="{{index}}" range="{{remarkPicker}}">
+              <view class="flex-row items-center">
+                <image class="arrow-img" src="/asset/png/arrow.png"/>
+              </view>
+            </picker>
           </view>
         </view>
       </view>
@@ -87,7 +96,16 @@
     data = {
       amount: null,
       count: 0,
-      remark: ''
+      remark: '',
+      remarkPicker: [
+          '恭喜发财，大吉大利',
+          '发福包，攒人品',
+          '除了要颜值，还得有运气',
+          '我发一个，你也发一个',
+          '不要错过一个亿哦',
+          '拿去花吧，哥有钱！'
+      ],
+      index: 0
     }
 
     computed = {
@@ -120,6 +138,10 @@
 
       remarkInput(e) {
         this.remark = e.detail.value
+      },
+
+      remarkChange(e) {
+        this.remark = this.remarkPicker[e.detail.value]
       }
     }
 
