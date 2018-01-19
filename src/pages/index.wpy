@@ -141,10 +141,10 @@
         <image class="tool-btn-img" src="/asset/png/home_record.png"/>
         <text class="tool-btn-text">福包记录</text>
       </view>
-      <view class="tool-btn">
+      <navigator class="tool-btn" url="/pages/mine/balance" hover-class="none">
         <image class="tool-btn-img" src="/asset/png/home_my_balance.png"/>
         <text class="tool-btn-text">我的余额</text>
-      </view>
+      </navigator>
       <button class="contact-btn tool-btn" open-type="contact">
         <image class="tool-btn-img" src="/asset/png/home_service.png"/>
         <text class="tool-btn-text">联系客服</text>

@@ -1,0 +1,133 @@
+<style lang="less">
+  @import "../../styles/vars.less";
+
+  .container-bg {
+    background: @bg-color;
+  }
+
+  .header-view {
+    background: @color-primary;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30rpx 0;
+  }
+
+  .avatar-view {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16rpx 32rpx;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 50rpx;
+  }
+
+  .avatar {
+    width: 56rpx;
+    height: 56rpx;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 16rpx;
+  }
+
+  .nickname-text {
+    font-size: 14px;
+    color: #fff;
+    font-weight: bold;
+  }
+  
+  .balance-tip {
+    font-size: 17px;
+    color: #fff;
+    margin-top: 55rpx;
+  }
+
+  .balance-text {
+    font-size: 48px;
+    color: #fff;
+    font-weight: bold;
+    margin-top: 22rpx;
+  }
+
+  .balance-btn-text {
+    font-size: 17px;
+    color: #fff;;
+  }
+
+  .balance-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24rpx 200rpx;
+    background: @color-primary;
+    border: 1px solid #fff;
+    margin-top: 64rpx;
+    border-radius: 50rpx;
+  }
+
+  .header-bottom-img-view {
+    position: relative;
+    top: -5rpx;
+  }
+
+  .header-bottom-img {
+    width: 100%;
+  }
+</style>
+<template>
+  <view class="container container-bg">
+    <view class="header-view">
+      <view class="avatar-view">
+        <image class="avatar" src="{{ userInfo.avatar }}" background-size="cover"/>
+        <text class="nickname-text">{{ userInfo.nickname }}</text>
+      </view>
+      <text class="balance-tip">当前余额</text>
+      <text class="balance-text">¥{{balance}}元</text>
+
+      <view class="balance-btn">
+        <text class="balance-btn-text">一键提现</text>
+      </view>
+    </view>
+    <view class="header-bottom-img-view">
+      <image class="header-bottom-img" src="/asset/png/mine_edge.png" mode="widthFix" />
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Tips from '../../utils/Tips'
+
+  export default class Balance extends wepy.page {
+    config = {
+      navigationBarTitleText: '我的余额',
+      enablePullDownRefresh: false
+    }
+    components = {
+    }
+
+    data = {
+      userInfo: {
+        nickname: '加载中...'
+      },
+      balance: '43.30'
+    }
+
+    computed = {
+    }
+
+    methods = {
+    }
+
+    events = {
+    }
+
+    async onLoad() {
+      let userInfo = await this.$parent.getUserInfo()
+      if (userInfo) {
+        this.userInfo = userInfo
+      }
+      this.$apply()
+    }
+  }
+</script>
