@@ -2,6 +2,7 @@
   @import "./styles/vars.less";
   @import "./styles/base.less";
   @import "./styles/form.less";
+  @import "./styles/btn.less";
 
   .container {
     background: @color-primary;

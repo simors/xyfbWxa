@@ -35,9 +35,16 @@
     width: 24px;
     height: 24px;
   }
+
+  .btn-view {
+    margin-top: 16rpx;
+    padding: 0 180rpx;
+  }
 </style>
 <template>
   <view class="container">
+    <pageFooter/>
+
     <view class="input-view">
       <view class="fb-form">
         <view class="fb-input-cell">
@@ -65,7 +72,7 @@
           <view class="fb-form-content">
             <input class="fb-form-input" value="{{remark}}" placeholder="恭喜发财，大吉大利" @input="remarkInput"/>
             <picker bindchange="remarkChange" value="{{index}}" range="{{remarkPicker}}">
-              <view class="flex-row items-center">
+              <view class="flex-row items-center flex">
                 <image class="arrow-img" src="/asset/png/arrow.png"/>
               </view>
             </picker>
@@ -80,7 +87,14 @@
       <image class="input-bottom-img" src="/asset/png/home_edge.png" mode="widthFix" />
     </view>
 
-    <pageFooter/>
+    <view class="btn-view">
+      <button class="fb-btn">
+        <view class="flex-row flex items-center justify-center">
+          <image class="fb-btn-icon" src="/asset/png/home_red_envelopes.png"/>
+          <text class="fb-btn-text">塞钱进福包</text>
+        </view>
+      </button>
+    </view>
   </view>
 </template>
 
