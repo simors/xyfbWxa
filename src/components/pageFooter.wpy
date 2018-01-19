@@ -1,0 +1,38 @@
+<style lang="less">
+  .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 70%;
+  }
+
+  .foot-img {
+    width: 100%;
+  }
+
+</style>
+
+<template>
+  <view class="footer">
+    <image class="foot-img" src="/asset/png/home_bg.png"/>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class PageFooter extends wepy.component {
+    props = {
+    }
+
+    data = {
+    }
+
+    events = {
+    }
+
+    methods = {
+    }
+  }
+</script>

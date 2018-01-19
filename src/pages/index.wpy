@@ -79,11 +79,14 @@
     <view class="input-bottom-img-view">
       <image class="input-bottom-img" src="/asset/png/home_edge.png" mode="widthFix" />
     </view>
+
+    <pageFooter/>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
+  import PageFooter from '../components/pageFooter'
 
   export default class Index extends wepy.page {
     config = {
@@ -91,6 +94,7 @@
       enablePullDownRefresh: false
     }
     components = {
+      pageFooter: PageFooter
     }
 
     data = {
