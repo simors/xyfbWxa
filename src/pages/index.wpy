@@ -40,6 +40,46 @@
     margin-top: 16rpx;
     padding: 0 180rpx;
   }
+
+  .tool-btn-img {
+    width: 48rpx;
+    height: 48rpx;
+    margin-bottom: 16rpx;
+  }
+  
+  .tool-btn-text {
+    font-size: 15px;
+    color: #FFF4E6;
+  }
+
+  .tool-view {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 100rpx;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .tool-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .contact-btn {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+    background: transparent;
+    line-height: inherit;
+  }
+
+  button:after {
+    border: none;
+  }
 </style>
 <template>
   <view class="container">
@@ -93,6 +133,21 @@
           <image class="fb-btn-icon" src="/asset/png/home_red_envelopes.png"/>
           <text class="fb-btn-text">塞钱进福包</text>
         </view>
+      </button>
+    </view>
+
+    <view class="tool-view">
+      <view class="tool-btn">
+        <image class="tool-btn-img" src="/asset/png/home_record.png"/>
+        <text class="tool-btn-text">福包记录</text>
+      </view>
+      <view class="tool-btn">
+        <image class="tool-btn-img" src="/asset/png/home_my_balance.png"/>
+        <text class="tool-btn-text">我的余额</text>
+      </view>
+      <button class="contact-btn tool-btn" open-type="contact">
+        <image class="tool-btn-img" src="/asset/png/home_service.png"/>
+        <text class="tool-btn-text">联系客服</text>
       </button>
     </view>
   </view>
