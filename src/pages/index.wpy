@@ -137,10 +137,10 @@
     </view>
 
     <view class="tool-view">
-      <view class="tool-btn">
+      <navigator class="tool-btn" url="/pages/mine/records" hover-class="none">
         <image class="tool-btn-img" src="/asset/png/home_record.png"/>
         <text class="tool-btn-text">福包记录</text>
-      </view>
+      </navigator>
       <navigator class="tool-btn" url="/pages/mine/balance" hover-class="none">
         <image class="tool-btn-img" src="/asset/png/home_my_balance.png"/>
         <text class="tool-btn-text">我的余额</text>

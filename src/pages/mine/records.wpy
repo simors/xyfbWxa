@@ -1,0 +1,100 @@
+<style lang="less">
+  @import "../../styles/vars.less";
+
+  .container-bg {
+    background: @bg-color;
+  }
+
+  .radio-btn-view {
+    padding: 34rpx 30rpx;
+  }
+
+  .radio-btn-group {
+    display: flex;
+    align-items: center;
+    height: 50rpx;
+    border: 1px solid @color-primary;
+  }
+
+  .radio-btn-checked {
+    background: @color-primary;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+  }
+
+  .radio-btn-unchecked {
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+  }
+
+  .radio-btn-text-checked {
+    font-size: 14px;
+    color: #fff;
+  }
+
+  .radio-btn-text-unchecked {
+    font-size: 14px;
+    color: #696668;
+  }
+
+  .radio-btn {
+    position: absolute;
+    opacity: 0;
+    background: transparent;
+    width: 250rpx;
+  }
+</style>
+<template>
+  <view class="container container-bg">
+    <view class="radio-btn-view">
+      <radio-group class="radio-btn-group" bindchange="typeChange">
+        <view class="{{type === 'rcv' ? 'radio-btn-checked' : 'radio-btn-unchecked'}}">
+          <radio value="rcv" class="radio-btn"/>
+          <text class="{{type === 'rcv' ? 'radio-btn-text-checked' : 'radio-btn-text-unchecked'}}">领到的福包</text>
+        </view>
+        <view class="{{type === 'snd' ? 'radio-btn-checked' : 'radio-btn-unchecked'}}">
+          <radio value="snd" class="radio-btn"/>
+          <text class="{{type === 'snd' ? 'radio-btn-text-checked' : 'radio-btn-text-unchecked'}}">我发的福包</text>
+        </view>
+      </radio-group>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Tips from '../../utils/Tips'
+
+  export default class Records extends wepy.page {
+    config = {
+      navigationBarTitleText: '福包记录',
+      enablePullDownRefresh: false
+    }
+    components = {
+    }
+
+    data = {
+      type: 'rcv'
+    }
+
+    computed = {
+    }
+
+    methods = {
+      typeChange(e) {
+        this.type = e.detail.value
+        this.$apply()
+      }
+    }
+
+    events = {
+    }
+  }
+</script>

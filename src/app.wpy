@@ -45,7 +45,8 @@ export default class extends wepy.app {
     pages: [
         'pages/index',
         'pages/redEnvelopShare',
-        'pages/mine/balance'
+        'pages/mine/balance',
+        'pages/mine/records'
     ],
     window: {
       navigationBarTitleText: '幸运福包',
