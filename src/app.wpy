@@ -36,8 +36,8 @@ AV.init({
 
 // PROD
 //AV.init({
-//  appId: 'L3Cae9l7aornoukXME6ycMFD-gzGzoHsz',
-//  appKey: 'lH7LPYtJJLJjMnz2MHWrCmKz',
+//  appId: '2R6ElxahrIm3O4xjJF0fpNXO-gzGzoHsz',
+//  appKey: 'R0kWvaQsdIU6HDJPqxfwkWTw',
 //});
 
 export default class extends wepy.app {
