@@ -2,7 +2,7 @@
   @import "../../styles/vars.less";
 
   .container-bg {
-    background: @bg-color;
+    background: #fff;
   }
 
   .radio-btn-view {
@@ -65,23 +65,47 @@
         </view>
       </radio-group>
     </view>
+
+    <view wx:if="{{type === 'snd'}}">
+      <repeat for="{{recvRdUsers}}" key="index" index="index" item="item">
+        <friendItem :user.sync="item"/>
+      </repeat>
+    </view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import Tips from '../../utils/Tips'
+  import FriendItem from '../../components/friendItem'
 
   export default class Records extends wepy.page {
     config = {
       navigationBarTitleText: '福包记录',
       enablePullDownRefresh: false
     }
+
     components = {
+      friendItem: FriendItem
     }
 
     data = {
-      type: 'rcv'
+      type: 'rcv',
+      recvRdUsers: [
+        {
+          avatar: 'https://wx.qlogo.cn/mmopen/vi_32/RuCERMnnEhDe5w8MqveZJsC18724HTdmVkAKP3tdiaeRSMJ5eUBZkicM0qK63kdV36G2mA5VFEXYTS552LePpvTw/0',
+          nickname: '王大可',
+          createdAt: '2018-01-21 12:49:32',
+          charge: '5.6'
+        },
+        {
+          avatar: 'https://wx.qlogo.cn/mmopen/vi_32/CcbyUEe4Ge9iaTW5xWFe3cx8BQM3JdDrOv0pRoHKHNKh0MNDiaEUfYB6E57V12Fyft5qVaBHM6ttIHQ3ADXPicibaA/0',
+          nickname: '王小可',
+          createdAt: '2018-01-21 12:49:32',
+          charge: '7.8'
+        },
+      ],
+      sendRdSet: []
     }
 
     computed = {

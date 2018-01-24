@@ -1,0 +1,84 @@
+<style lang="less">
+  @import "../styles/vars.less";
+
+  .item-view {
+    height: 138rpx;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 11rpx;
+    padding: 0 16rpx;
+    border-bottom: 1px solid rgba(8, 8, 8, 0.2);
+  }
+
+  .avatar {
+    width: 75rpx;
+    height: 75rpx;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .header-view {
+    display: flex;
+    align-items: center;
+  }
+
+  .text-view {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-left: 24rpx;
+  }
+
+  .name-text {
+    font-size: 17px;
+    color: #080808;
+    font-weight: bold;
+    margin-bottom: 16rpx;
+  }
+
+  .time-text {
+    font-size: 12px;
+    color: #696668;
+  }
+
+  .charge-text {
+    font-size: 20px;
+    color: @color-primary;
+    font-weight: bold;
+  }
+
+</style>
+
+<template>
+  <view class="item-view">
+    <view class="header-view">
+      <image src="{{user.avatar}}" class="avatar"/>
+      <view class="text-view">
+        <text class="name-text">{{user.nickname}}</text>
+        <text class="time-text">{{user.createdAt}}</text>
+      </view>
+    </view>
+    <text class="charge-text">¥{{user.charge}}</text>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class FriendItem extends wepy.component {
+    props = {
+      user: {}
+    }
+
+    data = {
+    }
+
+    events = {
+    }
+
+    methods = {
+    }
+  }
+</script>
