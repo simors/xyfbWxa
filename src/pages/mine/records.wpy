@@ -67,13 +67,13 @@
     </view>
 
     <view wx:if="{{type === 'rcv'}}">
-      <repeat for="{{sendRdSet}}" key="index" index="index" item="item">
-        <sndRedEnvelopItem :sndRe.sync="item"/>
+      <repeat for="{{recvRdUsers}}" key="index" index="index" item="item">
+        <friendItem :user.sync="item"/>
       </repeat>
     </view>
     <view wx:if="{{type === 'snd'}}">
-      <repeat for="{{recvRdUsers}}" key="index" index="index" item="item">
-        <friendItem :user.sync="item"/>
+      <repeat for="{{sendRdSet}}" key="index" index="index" item="item">
+        <sndRedEnvelopItem :sndRe.sync="item"/>
       </repeat>
     </view>
   </view>

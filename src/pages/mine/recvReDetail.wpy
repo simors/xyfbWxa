@@ -1,0 +1,207 @@
+<style lang="less">
+  @import "../../styles/vars.less";
+
+  .container-bg {
+    background: @bg-color;
+  }
+
+  .header-view {
+    background: @color-primary;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30rpx 0;
+  }
+
+  .avatar-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16rpx 0 32rpx 0;
+  }
+
+  .avatar {
+    width: 127rpx;
+    height: 127rpx;
+    border-radius: 10rpx;
+    overflow: hidden;
+  }
+
+  .nickname-text {
+    font-size: 14px;
+    color: #fff;
+    font-weight: bold;
+    margin-top: 24rpx;
+  }
+
+  .header-tip {
+    font-size: 15px;
+    color: #fff;
+  }
+
+  .account-text {
+    font-size: 28px;
+    color: #fff;
+    font-weight: bold;
+    margin-top: 16rpx;
+  }
+
+  .header-bottom-img-view {
+    position: relative;
+    top: -5rpx;
+  }
+
+  .header-bottom-img {
+    width: 100%;
+  }
+
+  .stat-text-view {
+    padding: 10rpx 24rpx 30rpx 24rpx;
+    margin: 0 12rpx;
+    border-bottom: 1px solid rgba(8, 8, 8, 0.2);
+  }
+
+  .stat-text {
+    font-size: 12px;
+    color: @color-primary;
+  }
+
+  .rdset-item-view {
+    height: 138rpx;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 11rpx;
+    padding: 0 16rpx;
+    border-bottom: 1px solid rgba(8, 8, 8, 0.2);
+  }
+
+  .rdset-header-view {
+    display: flex;
+    align-items: center;
+  }
+
+  .rdset-avatar {
+    width: 75rpx;
+    height: 75rpx;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .rdset-text-view {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-left: 24rpx;
+  }
+
+  .rdset-name-text {
+    font-size: 17px;
+    color: #080808;
+    font-weight: bold;
+    margin-bottom: 16rpx;
+  }
+
+  .rdset-time-text {
+    font-size: 12px;
+    color: #696668;
+  }
+
+  .rdset-charge-text {
+    font-size: 20px;
+    color: @color-primary;
+    font-weight: bold;
+  }
+</style>
+<template>
+  <view class="container container-bg">
+    <view class="header-view">
+      <view class="avatar-view">
+        <image class="avatar" src="{{ userInfo.avatar }}" background-size="cover"/>
+        <text class="nickname-text">{{ userInfo.nickname }}</text>
+      </view>
+      <text class="header-tip">发布的幸运福包游戏</text>
+      <text class="account-text">¥{{account}}元</text>
+    </view>
+    <view class="header-bottom-img-view">
+      <image class="header-bottom-img" src="/asset/png/mine_edge.png" mode="widthFix" />
+    </view>
+
+    <view class="stat-text-view">
+      <text class="stat-text">{{reDetail.count}}个福包共{{reDetail.account}}元，{{reDetail.joinNum}}人参与游戏</text>
+    </view>
+
+    <view>
+      <repeat for="{{recvRdUsers}}" key="index" index="index" item="item">
+        <view class="rdset-item-view">
+          <view class="rdset-header-view">
+            <image src="{{item.avatar}}" class="rdset-avatar"/>
+            <view class="rdset-text-view">
+              <text class="rdset-name-text">{{item.nickname}}</text>
+              <text class="rdset-time-text">{{item.createdAt}}</text>
+            </view>
+          </view>
+          <text class="rdset-charge-text">¥{{item.charge}}</text>
+        </view>
+      </repeat>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Tips from '../../utils/Tips'
+  import FriendItem from '../../components/friendItem'
+
+  export default class RecvReDetail extends wepy.page {
+    config = {
+      navigationBarTitleText: '红包记录',
+      enablePullDownRefresh: false
+    }
+
+    components = {
+      friendItem: FriendItem
+    }
+
+    data = {
+      userInfo: {
+        nickname: '大自然',
+        avatar: 'https://wx.qlogo.cn/mmopen/vi_32/CcbyUEe4Ge9iaTW5xWFe3cx8BQM3JdDrOv0pRoHKHNKh0MNDiaEUfYB6E57V12Fyft5qVaBHM6ttIHQ3ADXPicibaA/0',
+      },
+      account: '32.12',
+      reDetail: {
+        count: 10,
+        account: 452,
+        joinNum: 12
+      },
+      recvRdUsers: [
+        {
+          avatar: 'https://wx.qlogo.cn/mmopen/vi_32/RuCERMnnEhDe5w8MqveZJsC18724HTdmVkAKP3tdiaeRSMJ5eUBZkicM0qK63kdV36G2mA5VFEXYTS552LePpvTw/0',
+          nickname: '王大可',
+          createdAt: '2018-01-21 12:49:32',
+          charge: '5.6'
+        },
+        {
+          avatar: 'https://wx.qlogo.cn/mmopen/vi_32/CcbyUEe4Ge9iaTW5xWFe3cx8BQM3JdDrOv0pRoHKHNKh0MNDiaEUfYB6E57V12Fyft5qVaBHM6ttIHQ3ADXPicibaA/0',
+          nickname: '王小可',
+          createdAt: '2018-01-21 12:49:32',
+          charge: '7.8'
+        },
+      ]
+    }
+
+    computed = {
+    }
+
+    methods = {
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

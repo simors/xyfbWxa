@@ -52,7 +52,7 @@
 </style>
 
 <template>
-  <view class="item-view">
+  <navigator class="item-view" url="/pages/mine/recvReDetail">
     <view class="header-view">
       <image src="{{user.avatar}}" class="avatar"/>
       <view class="text-view">
@@ -61,7 +61,7 @@
       </view>
     </view>
     <text class="charge-text">¥{{user.charge}}</text>
-  </view>
+  </navigator>
 </template>
 
 <script>
