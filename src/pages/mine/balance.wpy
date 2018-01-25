@@ -91,12 +91,19 @@
     <view class="header-bottom-img-view">
       <image class="header-bottom-img" src="/asset/png/mine_edge.png" mode="widthFix" />
     </view>
+
+    <view>
+      <repeat for="{{balanceRecords}}" key="index" index="index" item="item">
+        <balanceRecord :record.sync="item"/>
+      </repeat>
+    </view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import Tips from '../../utils/Tips'
+  import BalanceRecord from '../../components/balanceRecord'
 
   export default class Balance extends wepy.page {
     config = {
@@ -104,13 +111,26 @@
       enablePullDownRefresh: false
     }
     components = {
+      balanceRecord: BalanceRecord,
     }
 
     data = {
       userInfo: {
         nickname: '加载中...'
       },
-      balance: '43.30'
+      balance: '43.30',
+      balanceRecords: [
+        {
+          type: 1,
+          account: 43.2,
+          createdAt: '2018-01-16 13:31:22'
+        },
+        {
+          type: 2,
+          account: 5.2,
+          createdAt: '2018-01-16 13:31:22'
+        }
+      ]
     }
 
     computed = {
