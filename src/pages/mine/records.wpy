@@ -66,6 +66,11 @@
       </radio-group>
     </view>
 
+    <view wx:if="{{type === 'rcv'}}">
+      <repeat for="{{sendRdSet}}" key="index" index="index" item="item">
+        <sndRedEnvelopItem :sndRe.sync="item"/>
+      </repeat>
+    </view>
     <view wx:if="{{type === 'snd'}}">
       <repeat for="{{recvRdUsers}}" key="index" index="index" item="item">
         <friendItem :user.sync="item"/>
@@ -78,6 +83,7 @@
   import wepy from 'wepy'
   import Tips from '../../utils/Tips'
   import FriendItem from '../../components/friendItem'
+  import SndRedEnvelopItem from '../../components/sndRedEnvelopItem'
 
   export default class Records extends wepy.page {
     config = {
@@ -86,7 +92,8 @@
     }
 
     components = {
-      friendItem: FriendItem
+      friendItem: FriendItem,
+      sndRedEnvelopItem: SndRedEnvelopItem
     }
 
     data = {
@@ -105,7 +112,29 @@
           charge: '7.8'
         },
       ],
-      sendRdSet: []
+      sendRdSet: [
+        {
+          account: '500',
+          count: 8,
+          recvCnt: 4,
+          balance: 122.41,
+          createdAt: '2018-01-14 13:31:22'
+        },
+        {
+          account: '5000',
+          count: 12,
+          recvCnt: 10,
+          balance: 122.41,
+          createdAt: '2018-01-11 13:31:22'
+        },
+        {
+          account: '5000.00',
+          count: 9,
+          recvCnt: 9,
+          balance: 0,
+          createdAt: '2018-01-16 13:31:22'
+        },
+      ]
     }
 
     computed = {

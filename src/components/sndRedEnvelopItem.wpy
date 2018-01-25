@@ -1,0 +1,89 @@
+<style lang="less">
+  @import "../styles/vars.less";
+
+  .re-item-view {
+    height: 193rpx;
+    display: flex;
+    align-items: center;
+    margin: 0 30rpx;
+    border-bottom: 1px solid rgba(8, 8, 8, 0.2);
+  }
+
+  .re-item-view-disable {
+    height: 193rpx;
+    display: flex;
+    align-items: center;
+    margin: 0 30rpx;
+    border-bottom: 1px solid rgba(8, 8, 8, 0.2);
+    opacity: 0.3;
+  }
+
+  .header-bg-img {
+    width: 197rpx;
+    height: 113rpx;
+    position: relative;
+  }
+
+  .account-text {
+    font-size: 17px;
+    color: #fff;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform:translate(-40rpx, -50%);
+  }
+
+  .content-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    margin-left: 32rpx;
+  }
+
+</style>
+
+<template>
+  <view class="{{sndRe.count === sndRe.recvCnt ? 're-item-view-disable' : 're-item-view'}}">
+    <image class="header-bg-img" src="/asset/png/red_envelopes_mine.png">
+      <text class="account-text">{{sndRe.account}}</text>
+    </image>
+    <view class="content-view">
+      <view class="flex-row justify-between flex" style="width: 100%;">
+        <text style="font-size: 17px; color: #080808;">发了{{sndRe.count}}个福包</text>
+        <view class="flex-row items-center">
+          <text style="font-size: 17px; color: #f7680b; font-weight: bold;">{{sndRe.recvCnt}}</text>
+          <text style="font-size: 12px; color: #696668;">/{{sndRe.count}}</text>
+        </view>
+      </view>
+      <view class="flex-row justify-between flex" style="width: 100%; margin-top: 16rpx">
+        <view class="flex-row items-center">
+          <text style="font-size: 12px; color: #696668;">剩余</text>
+          <text style="font-size: 12px; color: #f7680b;">{{sndRe.balance}}元</text>
+        </view>
+        <text style="font-size: 12px; color: #696668;">{{sndRe.createdAt}}</text>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class SndRedEnvelopItem extends wepy.component {
+    props = {
+      sndRe: {}
+    }
+
+    data = {
+    }
+
+    events = {
+    }
+
+    methods = {
+    }
+  }
+</script>
