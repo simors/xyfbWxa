@@ -230,6 +230,14 @@
           Tips.error('输入福包金额')
           return
         }
+        if (!this.count) {
+          Tips.error('输入福包数量')
+          return
+        }
+        if (this.count > 100) {
+          Tips.alert('最多100个福包')
+          return
+        }
         try {
           let charge = await pay.reqPayment({
             openid: currentUser.weappOpenid,
