@@ -238,6 +238,10 @@
           Tips.alert('最多100个福包')
           return
         }
+        if (Number(0.01 * this.count).toFixed(2) > Number(this.amount)) {
+          Tips.alert('福包大于0.01元')
+          return
+        }
         try {
           let charge = await pay.reqPayment({
             openid: currentUser.weappOpenid,
@@ -260,7 +264,7 @@
               Tips.error('支付失败')
             } else if (result == "cancel") {
               // 微信小程序支付取消支付
-              Tips.warn('取消支付')
+              Tips.alert('取消支付')
             }
           });
         } catch (e) {
