@@ -250,6 +250,7 @@
       let xyfb = this.xyfb = new xyfbGame({
         cxt: this.ctx,
         id: 'first',
+        balance: 100.5
       })
     }
   }

@@ -97,7 +97,7 @@ function xyfbGame(opts) {
   var walked = this.walked = opts.walked
   var isEnd = this.isEnd = opts.isEnd
   let hasred = this.hasred = opts.hasred
-
+  let balance = this.balance = opts.balance
   //等待时间
   var loadingTime = 0;
 
@@ -113,15 +113,20 @@ function xyfbGame(opts) {
 
   //文字
   function drawText() {
-    ctx.setFontSize(20*ratio)
-    ctx.fillText('按住【开始】按钮', rectLine, rectLine * 2)
-    ctx.fillText('开始找红包吧', rectLine+rectLine*0.2, rectLine * 2 + rectLine / 2)
+    ctx.setFontSize(17*ratio)
+    ctx.setFillStyle('#EBB52B')
+    ctx.fillText('按住【开始】按钮', rectLine+12*ratio, rectLine * 1.5)
+    ctx.fillText('开始找红包吧', rectLine+rectLine*0.2+12*ratio, rectLine * 2)
+    ctx.setFontSize(15*ratio)
+    ctx.setFillStyle('#EBB52B')
+    ctx.fillText('剩余金额： ¥'+balance, rectLine, rectLine * 3)
 
   }
 
   //画红包数量
   function drawRedNum() {
-    ctx.setFontSize(16*ratio)
+    ctx.setFontSize(12*ratio)
+    ctx.setFillStyle('#EBB52B')
     ctx.drawImage(xyfbImages['game_receive_record_bg'].src, rectLine, rectLine*3+rectLine*0.2, rectLine *2, rectLine*0.8)
     ctx.drawImage(xyfbImages['game_receive_record'].src, rectLine, rectLine*3+rectLine*0.2, rectLine*0.6, rectLine*0.6)
     ctx.fillText('已领7／8', rectLine*2, rectLine*3+rectLine*0.7)
@@ -130,6 +135,7 @@ function xyfbGame(opts) {
   //画大红包
   function drawIsEnd() {
     if (isEnd) {
+      ctx.setFillStyle('#FFFFFF')
       ctx.setFontSize(24*ratio)
       ctx.drawImage(xyfbImages['share_bg'].src, 0, rectLine, rectLine*4, rectLine*3)
       ctx.fillText('恭喜领到红包咯', rectLine, rectLine * 3)
