@@ -6,8 +6,8 @@
   }
 
   .canvasStyle {
-    width: 660rpx;
-    height: 810rpx;
+    width: 640rpx;
+    height: 800rpx;
     background-color: #D14D00;
     border-radius: 40rpx
   }
@@ -249,7 +249,7 @@
       var context = this.ctx = wx.createCanvasContext('first');
       let xyfb = this.xyfb = new xyfbGame({
         cxt: this.ctx,
-        id: 'first'
+        id: 'first',
       })
     }
   }
