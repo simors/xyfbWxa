@@ -207,7 +207,8 @@
       }
 
     }
-//计算格子
+
+    //计算格子
     computeBox() {
       if (!this.isEnd) {
         this.count = this.count + 1
@@ -216,24 +217,14 @@
         let xyfb = this.xyfb
         xyfb.changeWalked(this.walked)
         if (this.countStart < 0) {
-          this.computeBoxTimer = setTimeout(()
-        =>
-          {
+          this.computeBoxTimer = setTimeout(() => {
             this.computeBox()
-          }
-        ,
-          100
-        )
+          }, 100)
         } else {
           this.countStart = this.countStart - 1
-          this.computeBoxTimer = setTimeout(()
-        =>
-          {
+          this.computeBoxTimer = setTimeout(() => {
             this.computeBox()
-          }
-        ,
-          500
-        )
+          }, 500)
         }
       } else {
         if (this.countEnd < 0) {
@@ -247,14 +238,9 @@
           let xyfb = this.xyfb
           xyfb.changeWalked(this.walked)
           this.countEnd = this.countEnd - 1
-          this.computeBoxTimer = setTimeout(()
-        =>
-          {
+          this.computeBoxTimer = setTimeout(() => {
             this.computeBox()
-          }
-        ,
-          500
-        )
+          },500)
         }
       }
     }
