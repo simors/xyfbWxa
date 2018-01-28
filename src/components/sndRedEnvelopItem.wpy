@@ -46,7 +46,7 @@
 </style>
 
 <template>
-  <view class="{{sndRe.count === sndRe.recvCnt ? 're-item-view-disable' : 're-item-view'}}">
+  <navigator class="{{sndRe.count === sndRe.recvCnt ? 're-item-view-disable' : 're-item-view'}}" url="/pages/gameFin">
     <image class="header-bg-img" src="/asset/png/red_envelopes_mine.png">
       <text class="account-text">{{sndRe.account}}</text>
     </image>
@@ -66,7 +66,7 @@
         <text style="font-size: 12px; color: #696668;">{{sndRe.createdAt}}</text>
       </view>
     </view>
-  </view>
+  </navigator>
 </template>
 
 <script>

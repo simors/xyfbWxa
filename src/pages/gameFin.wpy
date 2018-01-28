@@ -1,260 +1,270 @@
 <style lang="less">
-    .userinfo {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+  .userinfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-    .canvasStyle{
-        width: 660rpx;
-        height: 810rpx;
-        background-color: #D14D00;
-        border-radius: 40rpx
-    }
+  .canvasStyle {
+    width: 660 rpx;
+    height: 810 rpx;
+    background-color: #D14D00;
+    border-radius: 40 rpx
+  }
 
-    .gameBody{
-        background-color: #F7680B;
-        align-items: center;
-        display: flex;
-        flex-direction: column;
-        padding: 5rpx;
-    }
+  .gameBody {
+    background-color: #F7680B;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    padding: 5 rpx;
+  }
 
-    .userinfo-avatar {
-        width: 60rpx;
-        height: 60rpx;
-    }
+  .userinfo-avatar {
+    width: 60 rpx;
+    height: 60 rpx;
+  }
 
-    .gameBox{
-        margin-left: 5rpx;
-        margin-right: 5rpx;
-        padding: 5rpx;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 10rpx dotted yellow;
-        border-radius: 40rpx;
-        background-color: '#D14D00';
-    }
+  .gameBox {
+    margin-left: 5 rpx;
+    margin-right: 5 rpx;
+    padding: 5 rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 10 rpx dotted yellow;
+    border-radius: 40 rpx;
+    background-color: '#D14D00';
+  }
 
-    .gameContainer{
-        background-color: #FF8B33;
-        border-radius: 40rpx;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        padding: 5rpx;
-    }
+  .gameContainer {
+    background-color: #FF8B33;
+    border-radius: 40 rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 5 rpx;
+  }
 
-    .gameInfo{
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        width: 90%;
-        padding: 10rpx;
-    }
+  .gameInfo {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    padding: 10 rpx;
+  }
 
-    .ownerInfo{
-        display: flex;
-        flex-direction: row;
-        font-size: 40rpx;
-        color: white;
-        align-items: center;
-        justify-content: center;
-    }
+  .ownerInfo {
+    display: flex;
+    flex-direction: row;
+    font-size: 40 rpx;
+    color: white;
+    align-items: center;
+    justify-content: center;
+  }
 
-    .userInfoRedNum{
-        font-size: 28rpx;
-        color: white;
-    }
+  .userInfoRedNum {
+    font-size: 28 rpx;
+    color: white;
+  }
 
-    .buttonWrap{
-        display: flex;
-        flex-direction: row;
-        width: 90%;
-        align-items: center;
-        justify-content: center;
-        margin-top: 40rpx;
-        margin-bottom: 40rpx;
-    }
+  .buttonWrap {
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    align-items: center;
+    justify-content: center;
+    margin-top: 40 rpx;
+    margin-bottom: 40 rpx;
+  }
 
-    .backButton{
-        width: 155rpx;
-        height: 75rpx;
-        border: 8px solid #FF8B33;
-        background: #D14D00;
-        align-items: center;
-        color:white;
-        justify-content: center;
-        border-radius: 60rpx;
-        font-size: 28rpx;
-        display: flex;
-        margin-right: 10rpx;
-    }
+  .backButton {
+    width: 155 rpx;
+    height: 75 rpx;
+    border: 8px solid #FF8B33;
+    background: #D14D00;
+    align-items: center;
+    color: white;
+    justify-content: center;
+    border-radius: 60 rpx;
+    font-size: 28 rpx;
+    display: flex;
+    margin-right: 10 rpx;
+  }
 
-    .redButton{
-        width:340rpx;
-        height: 122rpx;
-        border: 6px solid #FDE808;
-        border-radius: 100rpx;
-        background: #D14D00;
-        align-items: center;
-        color:white;
-        justify-content: center;
-        font-size: 78rpx;
-        display: flex;
-        margin-right: 10rpx;
-    }
+  .redButton {
+    width: 340 rpx;
+    height: 122 rpx;
+    border: 6px solid #FDE808;
+    border-radius: 100 rpx;
+    background: #D14D00;
+    align-items: center;
+    color: white;
+    justify-content: center;
+    font-size: 78 rpx;
+    display: flex;
+    margin-right: 10 rpx;
+  }
 
-    .shareButton{
-        width: 155rpx;
-        height: 75rpx;
-        border: 8px solid #FF8B33;
-        background: #D14D00;
-        align-items: center;
-        color:white;
-        justify-content: center;
-        border-radius: 60rpx;
-        font-size: 28rpx;
-        display: flex;
-    }
+  .shareButton {
+    width: 155 rpx;
+    height: 75 rpx;
+    border: 8px solid #FF8B33;
+    background: #D14D00;
+    align-items: center;
+    color: white;
+    justify-content: center;
+    border-radius: 60 rpx;
+    font-size: 28 rpx;
+    display: flex;
+  }
 
-    .redMark{
-        width: 60rpx;
-        height: 60rpx;
-    }
+  .redMark {
+    width: 60 rpx;
+    height: 60 rpx;
+  }
 
 </style>
 <template>
-    <view class="container gameBody">
-        <view class="gameContainer">
-            <view class="gameInfo">
-                <view class="ownerInfo">
-                    <image class="userinfo-avatar" src="../asset/png/game_money_mark.png"/>
-                    <view class="userInfoRedNum">大自然发了8个红包</view>
-                </view>
-                <view class="ownerInfo">
-                    <image class="redMark" src="../asset/png/game_money_mark.png"/>
-                    <view class="userInfoRedNum">大自然发了8个红包</view>
-                </view>
-            </view>
-            <view class="gameBox">
-                <canvas
-                        @tap="test"
-                        class="canvasStyle"
-                        canvas-id="first"
-                        disable-scroll=true
-
-                ></canvas>
-            </view>
+  <view class="container gameBody">
+    <view class="gameContainer">
+      <view class="gameInfo">
+        <view class="ownerInfo">
+          <image class="userinfo-avatar" src="../asset/png/game_money_mark.png"/>
+          <view class="userInfoRedNum">大自然发了8个红包</view>
         </view>
-        <view class="buttonWrap">
-            <view class="backButton" @tap="stop">首页</view>
-            <view class="redButton" @touchstart="start" @touchend="ok">开始</view>
-            <view class="shareButton" @tap="stop">分享</view>
+        <view class="ownerInfo">
+          <image class="redMark" src="../asset/png/game_money_mark.png"/>
+          <view class="userInfoRedNum">大自然发了8个红包</view>
         </view>
+      </view>
+      <view class="gameBox">
+        <canvas
+            @tap="test"
+            class="canvasStyle"
+            canvas-id="first"
+            disable-scroll=true
 
-
-
+        ></canvas>
+      </view>
     </view>
+    <view class="buttonWrap">
+      <view class="backButton" @tap="stop">首页</view>
+      <view class="redButton" @touchstart="start" @touchend="ok">开始</view>
+      <view class="shareButton" @tap="stop">分享</view>
+    </view>
+
+
+  </view>
 </template>
 
 <script>
-    import wepy from 'wepy'
-    const xyfbGame = require('../yxfbGame/xyfbGame')
+  import wepy from 'wepy'
+  const xyfbGame = require('../yxfbGame/xyfbGame')
 
-    export default class GameFin extends wepy.page {
-        config = {
-            navigationBarTitleText: '幸运福包',
-            enablePullDownRefresh: false
-        }
-        components = {
-
-
-        }
-
-        data = {
-            ctx: null,
-            count: -1,
-            walked: 0,
-            isEnd: false,
-            countStart: 3,
-            countEnd: 3,
-            wxCanvas:null,
-            computeBoxTimer: null,
-            renderBoxTimer: null,
-            rectListLength:14,
-            xyfb:undefined,
-            hasred:false,
-        }
-
-
-
-        methods = {
-            start(){
-                this.countStart=3
-                this.countEnd=3
-                this.isEnd = false
-                let xyfb = this.xyfb
-                xyfb.changeEnd(this.isEnd,this.hasred)
-                this.computeBox()
-            },
-            test(){
-            },
-            ok(){
-                this.isEnd = true
-            },
-            stop(){
-                let xyfb = this.xyfb
-                xyfb.stop()
-            }
-
-        }
-//计算格子
-        computeBox(){
-            if(!this.isEnd){
-                this.count = this.count + 1
-                let walkedBox = this.count%this.rectListLength
-                this.walked = walkedBox
-                let xyfb = this.xyfb
-                xyfb.changeWalked(this.walked)
-                if(this.countStart < 0){
-                    this.computeBoxTimer = setTimeout(()=>{
-                        this.computeBox()
-                    },100)
-                }else{
-                    this.countStart = this.countStart - 1
-                    this.computeBoxTimer = setTimeout(()=>{
-                        this.computeBox()
-                    },500)
-                }
-            }else{
-                if(this.countEnd<0){
-                    let xyfb = this.xyfb
-                    this.hasred = true
-                    xyfb.changeEnd(this.isEnd,this.hasred)
-                }else{
-                    this.count = this.count + 1
-                    let walkedBox = this.count%this.rectListLength
-                    this.walked = walkedBox
-                    let xyfb = this.xyfb
-                    xyfb.changeWalked(this.walked)
-                    this.countEnd = this.countEnd - 1
-                    this.computeBoxTimer = setTimeout(()=>{
-                        this.computeBox()
-                    },500)
-                }
-            }
-        }
-
-        onLoad() {
-            var context = this.ctx = wx.createCanvasContext('first');
-            let xyfb = this.xyfb = new xyfbGame({
-                cxt: this.ctx,
-                id:'first'
-            })
-        }
+  export default class GameFin extends wepy.page {
+    config = {
+      navigationBarTitleText: '幸运福包',
+      enablePullDownRefresh: false
     }
+    components = {}
+
+    data = {
+      ctx: null,
+      count: -1,
+      walked: 0,
+      isEnd: false,
+      countStart: 3,
+      countEnd: 3,
+      wxCanvas: null,
+      computeBoxTimer: null,
+      renderBoxTimer: null,
+      rectListLength: 14,
+      xyfb: undefined,
+      hasred: false,
+    }
+
+
+    methods = {
+      start(){
+        this.countStart = 3
+        this.countEnd = 3
+        this.isEnd = false
+        let xyfb = this.xyfb
+        xyfb.changeEnd(this.isEnd, this.hasred)
+        this.computeBox()
+      },
+      test(){
+      },
+      ok(){
+        this.isEnd = true
+      },
+      stop(){
+        let xyfb = this.xyfb
+        xyfb.stop()
+      }
+
+    }
+//计算格子
+    computeBox() {
+      if (!this.isEnd) {
+        this.count = this.count + 1
+        let walkedBox = this.count % this.rectListLength
+        this.walked = walkedBox
+        let xyfb = this.xyfb
+        xyfb.changeWalked(this.walked)
+        if (this.countStart < 0) {
+          this.computeBoxTimer = setTimeout(()
+        =>
+          {
+            this.computeBox()
+          }
+        ,
+          100
+        )
+        } else {
+          this.countStart = this.countStart - 1
+          this.computeBoxTimer = setTimeout(()
+        =>
+          {
+            this.computeBox()
+          }
+        ,
+          500
+        )
+        }
+      } else {
+        if (this.countEnd < 0) {
+          let xyfb = this.xyfb
+          this.hasred = true
+          xyfb.changeEnd(this.isEnd, this.hasred)
+        } else {
+          this.count = this.count + 1
+          let walkedBox = this.count % this.rectListLength
+          this.walked = walkedBox
+          let xyfb = this.xyfb
+          xyfb.changeWalked(this.walked)
+          this.countEnd = this.countEnd - 1
+          this.computeBoxTimer = setTimeout(()
+        =>
+          {
+            this.computeBox()
+          }
+        ,
+          500
+        )
+        }
+      }
+    }
+
+    onLoad() {
+      var context = this.ctx = wx.createCanvasContext('first');
+      let xyfb = this.xyfb = new xyfbGame({
+        cxt: this.ctx,
+        id: 'first'
+      })
+    }
+  }
 </script>
