@@ -249,7 +249,7 @@
             metadata: {
               'fromUser': currentUser.id,
               'toUser': 'platform',
-              'dealType': pay.DEAL_TYPE.SEND_RD_PAY,
+              'dealType': pay.DEAL_TYPE.SEND_FUBAO,
               'count': this.count,
               'remark': this.remark
             },

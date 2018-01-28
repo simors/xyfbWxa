@@ -5,8 +5,9 @@ import AV from '../utils/av-weapp-min'
 
 export default class pay {
   static DEAL_TYPE = {
-    SEND_RD_PAY: 1,   // 发红包
-    WITHDRAW: 2,      // 提现
+    SEND_FUBAO: 1,    // 发福包
+    RECV_FUBAO: 2,    // 抢到福包
+    WITHDRAW: 3,      // 提现
   }
   
   static WALLET_PROCESS_TYPE = {
