@@ -6,10 +6,10 @@
   }
 
   .canvasStyle {
-    width: 660 rpx;
-    height: 810 rpx;
+    width: 660rpx;
+    height: 810rpx;
     background-color: #D14D00;
-    border-radius: 40 rpx
+    border-radius: 40rpx
   }
 
   .gameBody {
@@ -17,34 +17,34 @@
     align-items: center;
     display: flex;
     flex-direction: column;
-    padding: 5 rpx;
+    padding: 5rpx;
   }
 
   .userinfo-avatar {
-    width: 60 rpx;
-    height: 60 rpx;
+    width: 60rpx;
+    height: 60rpx;
   }
 
   .gameBox {
-    margin-left: 5 rpx;
-    margin-right: 5 rpx;
-    padding: 5 rpx;
+    margin-left: 5rpx;
+    margin-right: 5rpx;
+    padding: 5rpx;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 10 rpx dotted yellow;
-    border-radius: 40 rpx;
+    border: 10rpx dotted yellow;
+    border-radius: 40rpx;
     background-color: '#D14D00';
   }
 
   .gameContainer {
     background-color: #FF8B33;
-    border-radius: 40 rpx;
+    border-radius: 40rpx;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    padding: 5 rpx;
+    padding: 5rpx;
   }
 
   .gameInfo {
@@ -53,20 +53,20 @@
     justify-content: space-between;
     align-items: center;
     width: 90%;
-    padding: 10 rpx;
+    padding: 10rpx;
   }
 
   .ownerInfo {
     display: flex;
     flex-direction: row;
-    font-size: 40 rpx;
+    font-size: 40rpx;
     color: white;
     align-items: center;
     justify-content: center;
   }
 
   .userInfoRedNum {
-    font-size: 28 rpx;
+    font-size: 28rpx;
     color: white;
   }
 
@@ -76,54 +76,54 @@
     width: 90%;
     align-items: center;
     justify-content: center;
-    margin-top: 40 rpx;
-    margin-bottom: 40 rpx;
+    margin-top: 40rpx;
+    margin-bottom: 40rpx;
   }
 
   .backButton {
-    width: 155 rpx;
-    height: 75 rpx;
+    width: 155rpx;
+    height: 75rpx;
     border: 8px solid #FF8B33;
     background: #D14D00;
     align-items: center;
     color: white;
     justify-content: center;
-    border-radius: 60 rpx;
-    font-size: 28 rpx;
+    border-radius: 60rpx;
+    font-size: 28rpx;
     display: flex;
-    margin-right: 10 rpx;
+    margin-right: 10rpx;
   }
 
   .redButton {
-    width: 340 rpx;
-    height: 122 rpx;
+    width: 340rpx;
+    height: 122rpx;
     border: 6px solid #FDE808;
-    border-radius: 100 rpx;
+    border-radius: 100rpx;
     background: #D14D00;
     align-items: center;
     color: white;
     justify-content: center;
-    font-size: 78 rpx;
+    font-size: 78rpx;
     display: flex;
-    margin-right: 10 rpx;
+    margin-right: 10rpx;
   }
 
   .shareButton {
-    width: 155 rpx;
-    height: 75 rpx;
+    width: 155rpx;
+    height: 75rpx;
     border: 8px solid #FF8B33;
     background: #D14D00;
     align-items: center;
     color: white;
     justify-content: center;
-    border-radius: 60 rpx;
-    font-size: 28 rpx;
+    border-radius: 60rpx;
+    font-size: 28rpx;
     display: flex;
   }
 
   .redMark {
-    width: 60 rpx;
-    height: 60 rpx;
+    width: 60rpx;
+    height: 60rpx;
   }
 
 </style>
