@@ -164,6 +164,8 @@
   import wepy from 'wepy'
   const xyfbGame = require('../yxfbGame/xyfbGame')
   import {WSS_DOMAIN, REQUEST_DRAW_LOTTERY} from '../utils/appConfig'
+  import Tips from '../utils/Tips'
+  import * as errno from '../utils/errno'
 
   export default class GameFin extends wepy.page {
     config = {
@@ -299,6 +301,21 @@
       })
       wx.onSocketMessage((res) => {
         let lottery = JSON.parse(res.data)
+        if (lottery.errcode != 0) {
+          switch (lottery.errcode) {
+            case errno.ERROR_LUCKYDIP_GAME_OVER:
+              Tips.error('所有福包被抢走')
+              break
+            case errno.ERROR_LUCKYDIP_EXPIRE:
+              Tips.error('福包已过期')
+              break
+            case errno.ERROR_LUCKYDIP_PARTICIPANT_OVER:
+              Tips.error('抽奖机会已用完')
+              break
+            default:
+          }
+          return
+        }
         this.money = lottery.money
         console.log('收到服务器内容：money=' + this.money)
       })
