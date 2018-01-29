@@ -27,18 +27,10 @@ import wepy from 'wepy'
 import 'wepy-async-function'
 import AV from './utils/av-weapp-min'
 import user from './cloud/user'
+import {APP_ID, APP_KEY} from './utils/appConfig'
 
 // DEV
-AV.init({
-  appId: 'dHMtEcCm3jlfpRwRBzFvTATg-gzGzoHsz',
-  appKey: '1gKH7vubIldeiHhvQXqpAuaK',
-});
-
-// PROD
-//AV.init({
-//  appId: '2R6ElxahrIm3O4xjJF0fpNXO-gzGzoHsz',
-//  appKey: 'R0kWvaQsdIU6HDJPqxfwkWTw',
-//});
+AV.init({appId: APP_ID, appKey: APP_KEY});
 
 export default class extends wepy.app {
   config = {
