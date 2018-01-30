@@ -52,15 +52,15 @@
 </style>
 
 <template>
-  <navigator class="item-view" url="/pages/mine/recvReDetail">
+  <navigator class="item-view" url="/pages/mine/recvReDetail?luckyDipId={{fubao.luckyDip.id}}&nickname={{fubao.user.nickname}}&avatar={{fubao.user.avatar}}&money={{fubao.money}}">
     <view class="header-view">
-      <image src="{{user.avatar}}" class="avatar"/>
+      <image src="{{fubao.user.avatar}}" class="avatar"/>
       <view class="text-view">
-        <text class="name-text">{{user.nickname}}</text>
-        <text class="time-text">{{user.createdAt}}</text>
+        <text class="name-text">{{fubao.user.nickname}}</text>
+        <text class="time-text">{{fubao.user.createdAt}}</text>
       </view>
     </view>
-    <text class="charge-text">¥{{user.charge}}</text>
+    <text class="charge-text">¥{{fubao.money}}</text>
   </navigator>
 </template>
 
@@ -69,7 +69,7 @@
 
   export default class FriendItem extends wepy.component {
     props = {
-      user: {}
+      fubao: {}
     }
 
     data = {

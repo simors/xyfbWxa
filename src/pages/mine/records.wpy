@@ -50,6 +50,22 @@
     background: transparent;
     width: 250rpx;
   }
+
+  .more-view {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 32rpx;
+  }
+
+  .more-view-hidden {
+    display: none;
+  }
+  
+  .more-text {
+    font-size: 12px;
+    color: #696668;
+  }
 </style>
 <template>
   <view class="container container-bg">
@@ -68,13 +84,19 @@
 
     <view wx:if="{{type === 'rcv'}}">
       <repeat for="{{recvRdUsers}}" key="index" index="index" item="item">
-        <friendItem :user.sync="item"/>
+        <friendItem :fubao.sync="item"/>
       </repeat>
+      <view class="{{recvHasmore ? 'more-view' : 'more-view-hidden'}}" @tap.stop="clickLoadMoreRecvFubao">
+        <text class="more-text">--- 加载更多 ---</text>
+      </view>
     </view>
     <view wx:if="{{type === 'snd'}}">
       <repeat for="{{sendRdSet}}" key="index" index="index" item="item">
         <sndRedEnvelopItem :sndRe.sync="item"/>
       </repeat>
+      <view class="{{sendHasmore ? 'more-view' : 'more-view-hidden'}}">
+        <text class="more-text">--- 加载更多 ---</text>
+      </view>
     </view>
   </view>
 </template>
@@ -84,6 +106,7 @@
   import Tips from '../../utils/Tips'
   import FriendItem from '../../components/friendItem'
   import SndRedEnvelopItem from '../../components/sndRedEnvelopItem'
+  import fubao from '../../cloud/fubao'
 
   export default class Records extends wepy.page {
     config = {
@@ -98,20 +121,9 @@
 
     data = {
       type: 'rcv',
-      recvRdUsers: [
-        {
-          avatar: 'https://wx.qlogo.cn/mmopen/vi_32/RuCERMnnEhDe5w8MqveZJsC18724HTdmVkAKP3tdiaeRSMJ5eUBZkicM0qK63kdV36G2mA5VFEXYTS552LePpvTw/0',
-          nickname: '王大可',
-          createdAt: '2018-01-21 12:49:32',
-          charge: '5.6'
-        },
-        {
-          avatar: 'https://wx.qlogo.cn/mmopen/vi_32/CcbyUEe4Ge9iaTW5xWFe3cx8BQM3JdDrOv0pRoHKHNKh0MNDiaEUfYB6E57V12Fyft5qVaBHM6ttIHQ3ADXPicibaA/0',
-          nickname: '王小可',
-          createdAt: '2018-01-21 12:49:32',
-          charge: '7.8'
-        },
-      ],
+      recvRdUsers: [],
+      recvLastTime: null,
+      recvHasmore: true,
       sendRdSet: [
         {
           account: '500',
@@ -134,7 +146,10 @@
           balance: 0,
           createdAt: '2018-01-16 13:31:22'
         },
-      ]
+      ],
+      sendLastTime: null,
+      sendHasmore: true,
+      limit: 10
     }
 
     computed = {
@@ -144,10 +159,46 @@
       typeChange(e) {
         this.type = e.detail.value
         this.$apply()
+      },
+
+      async clickLoadMoreRecvFubao() {
+        await this.loadMoreRecvedFubaos()
+        this.$apply()
       }
     }
 
     events = {
+    }
+
+    async loadRecvedFubaos() {
+      Tips.loading()
+      this.recvRdUsers = await fubao.fetchFetchRecvedFubao({limit: this.limit})
+      Tips.loaded()
+      let size = this.recvRdUsers.length
+      if (size > 0) {
+        this.recvLastTime = this.recvRdUsers[size-1].createdAt
+      }
+      if (size < this.limit) {
+        this.recvHasmore = false
+      }
+    }
+
+    async loadMoreRecvedFubaos() {
+      Tips.loading()
+      let newRecvRds = await fubao.fetchFetchRecvedFubao({lastTime: this.recvLastTime, limit: this.limit})
+      Tips.loaded()
+      let size = newRecvRds.length
+      if (size > 0) {
+        this.recvRdUsers.push(...newRecvRds)
+      }
+      if (size < this.limit) {
+        this.recvHasmore = false
+      }
+    }
+
+    async onLoad() {
+      await this.loadRecvedFubaos()
+      this.$apply()
     }
   }
 </script>
