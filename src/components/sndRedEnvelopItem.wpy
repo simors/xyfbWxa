@@ -46,15 +46,15 @@
 </style>
 
 <template>
-  <navigator class="{{sndRe.count === sndRe.recvCnt ? 're-item-view-disable' : 're-item-view'}}" url="/pages/gameFin">
+  <navigator class="{{sndRe.count === sndRe.recvCnt ? 're-item-view-disable' : 're-item-view'}}" url="/pages/gameFin?luckyDipId={{sndRe.id}}">
     <image class="header-bg-img" src="/asset/png/red_envelopes_mine.png">
-      <text class="account-text">{{sndRe.account}}</text>
+      <text class="account-text">{{sndRe.amount}}</text>
     </image>
     <view class="content-view">
       <view class="flex-row justify-between flex" style="width: 100%;">
         <text style="font-size: 17px; color: #080808;">发了{{sndRe.count}}个福包</text>
         <view class="flex-row items-center">
-          <text style="font-size: 17px; color: #f7680b; font-weight: bold;">{{sndRe.recvCnt}}</text>
+          <text style="font-size: 17px; color: #f7680b; font-weight: bold;">{{sndRe.count - sndRe.remain}}</text>
           <text style="font-size: 12px; color: #696668;">/{{sndRe.count}}</text>
         </view>
       </view>
