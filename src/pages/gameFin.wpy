@@ -166,6 +166,7 @@
   import {WSS_DOMAIN, REQUEST_DRAW_LOTTERY} from '../utils/appConfig'
   import Tips from '../utils/Tips'
   import * as errno from '../utils/errno'
+  import fubao from '../cloud/fubao'
 
   export default class GameFin extends wepy.page {
     config = {
@@ -189,7 +190,8 @@
       xyfb: undefined,
       hasred: false,
       socketOpen: false,
-      money: 0
+      money: 0,
+      luckyDip: null
     }
 
 
@@ -239,7 +241,7 @@
         data: JSON.stringify({
           type: REQUEST_DRAW_LOTTERY,
           userId: this.userInfo.id,
-          luckyDipId: '5a6c7f13d50eee00396576a3'
+          luckyDipId: this.luckyDip.id
         })
       })
     }
@@ -325,7 +327,12 @@
       })
     }
 
-    onLoad() {
+    async onLoad(option) {
+      if (option.luckyDipId) {
+        Tips.loading()
+        this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: option.luckyDipId})
+        Tips.loaded()
+      }
       var context = this.ctx = wx.createCanvasContext('first');
       let xyfb = this.xyfb = new xyfbGame({
         cxt: this.ctx,
