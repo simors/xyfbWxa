@@ -98,8 +98,7 @@ function xyfbGame(opts) {
   var isEnd = this.isEnd = opts.isEnd
   let hasred = this.hasred = opts.hasred
   let balance = this.balance = opts.balance
-  //等待时间
-  var loadingTime = 0;
+  let count = 1
 
   //等待动画刷新事件
   var refresh = ()=> {
@@ -107,7 +106,6 @@ function xyfbGame(opts) {
     drawBoxList();
     drawRedNum()
     drawIsEnd()
-    loadingTime++;
     ctx.draw()
   }
 
@@ -135,14 +133,42 @@ function xyfbGame(opts) {
   //画大红包
   function drawIsEnd() {
     if (isEnd) {
-      ctx.setFillStyle('#FFFFFF')
-      ctx.setFontSize(24*ratio)
-      ctx.drawImage(xyfbImages['share_bg'].src, 0, rectLine, rectLine*4, rectLine*3)
-      ctx.fillText('恭喜领到红包咯', rectLine, rectLine * 3)
-
+        ctx.save()
+        ctx.setFillStyle('#FFFFFF')
+        ctx.setFontSize(24*ratio)
+        ctx.drawImage(xyfbImages['share_bg'].src, 0, rectLine, rectLine*4, rectLine*3)
+        ctx.fillText('恭喜领到红包咯', rectLine, rectLine * 3)
+        ctx.restore()
     }
   }
 
+  //画发光的线条
+  function drawLight(item) {
+    let center = {
+      x: item.x+item.w/2,
+      y: item.y+item.h/2,
+    }
+      if(count<50){
+        count = count + 10
+      }else{
+        count=1
+      }
+      ctx.save()
+      const grd = ctx.createCircularGradient(item.x/2, center.x, center.y)
+      grd.addColorStop(0, 'red')
+      grd.addColorStop(1, 'white')
+      ctx.setLineWidth(5)
+      ctx.setStrokeStyle(grd);
+      ctx.moveTo(center.x,center.y)
+      ctx.lineTo(center.x+count,center.y+count)
+      ctx.moveTo(center.x,center.y)
+      ctx.lineTo(center.x,center.y+count)
+      ctx.moveTo(center.x,center.y)
+      ctx.lineTo(center.x+count,center.y)
+      ctx.stroke()
+      ctx.restore()
+
+  }
   //设置背景
   function drawBoxList() {
     let rectList = config['rectList']
@@ -151,7 +177,7 @@ function xyfbGame(opts) {
       if (isEnd == true && i == walked) {
         ctx.drawImage(xyfbImages['cellLight'].src, item.x, item.y, item.w, item.h)
         ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["share_bg"].src, item.x - 1, item.y - 1, item.w - 3, item.h - 3)
-
+        // drawLight(item)
       } else if (i == walked) {
         ctx.drawImage(xyfbImages['cellLight'].src, item.x, item.y, item.w, item.h)
 
@@ -163,7 +189,6 @@ function xyfbGame(opts) {
 
   var game = this.game = {}
   game.stop = () => {
-    console.log('stao=========>')
     clearInterval(loadingClock);
   }
 
