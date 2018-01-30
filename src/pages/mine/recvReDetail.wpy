@@ -119,18 +119,18 @@
   <view class="container container-bg">
     <view class="header-view">
       <view class="avatar-view">
-        <image class="avatar" src="{{ userInfo.avatar }}" background-size="cover"/>
-        <text class="nickname-text">{{ userInfo.nickname }}</text>
+        <image class="avatar" src="{{ avatar }}" background-size="cover"/>
+        <text class="nickname-text">{{ nickname }}</text>
       </view>
       <text class="header-tip">发布的幸运福包游戏</text>
-      <text class="account-text">¥{{account}}元</text>
+      <text class="account-text">¥{{money}}元</text>
     </view>
     <view class="header-bottom-img-view">
       <image class="header-bottom-img" src="/asset/png/mine_edge.png" mode="widthFix" />
     </view>
 
     <view class="stat-text-view">
-      <text class="stat-text">{{reDetail.count}}个福包共{{reDetail.account}}元，{{reDetail.joinNum}}人参与游戏</text>
+      <text class="stat-text">{{luckyDip.count}}个福包共{{luckyDip.amount}}元</text>
     </view>
 
     <view>
@@ -154,6 +154,7 @@
   import wepy from 'wepy'
   import Tips from '../../utils/Tips'
   import FriendItem from '../../components/friendItem'
+  import fubao from '../../cloud/fubao'
 
   export default class RecvReDetail extends wepy.page {
     config = {
@@ -166,16 +167,10 @@
     }
 
     data = {
-      userInfo: {
-        nickname: '大自然',
-        avatar: 'https://wx.qlogo.cn/mmopen/vi_32/CcbyUEe4Ge9iaTW5xWFe3cx8BQM3JdDrOv0pRoHKHNKh0MNDiaEUfYB6E57V12Fyft5qVaBHM6ttIHQ3ADXPicibaA/0',
-      },
-      account: '32.12',
-      reDetail: {
-        count: 10,
-        account: 452,
-        joinNum: 12
-      },
+      nickname: null,
+      avatar: null,
+      money: 0,
+      luckyDip: null,
       recvRdUsers: [
         {
           avatar: 'https://wx.qlogo.cn/mmopen/vi_32/RuCERMnnEhDe5w8MqveZJsC18724HTdmVkAKP3tdiaeRSMJ5eUBZkicM0qK63kdV36G2mA5VFEXYTS552LePpvTw/0',
@@ -201,7 +196,16 @@
     events = {
     }
 
-    onLoad() {
+    async onLoad(option) {
+      this.nickname = option.nickname
+      this.avatar = option.avatar
+      this.money = option.money
+      if (option.luckyDipId) {
+        Tips.loading()
+        this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: option.luckyDipId})
+        Tips.loaded()
+      }
+      this.$apply()
     }
   }
 </script>
