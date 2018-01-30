@@ -73,6 +73,22 @@
   .header-bottom-img {
     width: 100%;
   }
+
+  .more-view {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 32rpx;
+  }
+
+  .more-view-hidden {
+    display: none;
+  }
+
+  .more-text {
+    font-size: 12px;
+    color: #696668;
+  }
 </style>
 <template>
   <view class="container container-bg">
@@ -93,9 +109,12 @@
     </view>
 
     <view>
-      <repeat for="{{balanceRecords}}" key="index" index="index" item="item">
+      <repeat for="{{deals}}" key="index" index="index" item="item">
         <balanceRecord :record.sync="item"/>
       </repeat>
+      <view class="{{hasMore ? 'more-view' : 'more-view-hidden'}}" @tap.stop="moreDealRecords">
+        <text class="more-text">--- 加载更多 ---</text>
+      </view>
     </view>
     <view style="height: 200rpx"/>
   </view>
@@ -121,24 +140,31 @@
         nickname: '加载中...'
       },
       wallet: null,
-      balanceRecords: [
-        {
-          type: 1,
-          account: 43.2,
-          createdAt: '2018-01-16 13:31:22'
-        },
-        {
-          type: 2,
-          account: 5.2,
-          createdAt: '2018-01-16 13:31:22'
-        }
-      ]
+      deals: [],
+      lastTime: null,
+      hasMore: true,
+      limit: 5
     }
 
     computed = {
     }
 
     methods = {
+      async moreDealRecords() {
+        if (!this.hasMore) {
+          return
+        }
+        let deals = await pay.fetchUserDealRecords({lastTime: this.lastTime, limit: this.limit})
+        let size = deals.length
+        if (size < this.limit) {
+          this.hasMore = false
+        }
+        if (size > 0) {
+          this.deals.push(...deals)
+          this.lastTime = deals[size-1].dealTime
+        }
+        this.$apply()
+      }
     }
 
     events = {
@@ -149,7 +175,17 @@
       if (userInfo) {
         this.userInfo = userInfo
       }
+      Tips.loading()
       this.wallet = await pay.fetchWallet()
+      this.deals = await pay.fetchUserDealRecords({limit: this.limit})
+      Tips.loaded()
+      let size = this.deals.length
+      if (size < this.limit) {
+        this.hasMore = false
+      }
+      if (size > 0) {
+        this.lastTime = this.deals[size-1].dealTime
+      }
       this.$apply()
     }
   }
