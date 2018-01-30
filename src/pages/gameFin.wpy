@@ -343,6 +343,7 @@
         this.socketOpen = false
         console.log('WebSocket 已关闭！')
       })
+      this.$apply()
     }
 
     async onLoad(option) {
@@ -357,6 +358,7 @@
         id: 'first',
         balance: 100.5
       })
+      this.$apply()
     }
 
     onUnload() {
