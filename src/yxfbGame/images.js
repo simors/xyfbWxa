@@ -40,6 +40,21 @@ var gameImg = {
     height: '200',
     width: '300',
   },
+  "game_bless": {
+    src: imageSrc+'game_bless.png',
+    height: '200',
+    width: '300',
+  },
+  "game_share": {
+    src: imageSrc+'game_share.png',
+    height: '200',
+    width: '300',
+  },
+  "game_start": {
+    src: imageSrc+'game_start.png',
+    height: '200',
+    width: '300',
+  },
 }
 
 module.exports = gameImg
