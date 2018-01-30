@@ -43,7 +43,7 @@
   }
 
   .balance-text {
-    font-size: 48px;
+    font-size: 30px;
     color: #fff;
     font-weight: bold;
     margin-top: 22rpx;
@@ -82,7 +82,7 @@
         <text class="nickname-text">{{ userInfo.nickname }}</text>
       </view>
       <text class="balance-tip">当前余额</text>
-      <text class="balance-text">¥{{balance}}元</text>
+      <text class="balance-text">¥{{wallet.balance}}元</text>
 
       <view class="balance-btn">
         <text class="balance-btn-text">一键提现</text>
@@ -97,6 +97,7 @@
         <balanceRecord :record.sync="item"/>
       </repeat>
     </view>
+    <view style="height: 200rpx"/>
   </view>
 </template>
 
@@ -104,6 +105,7 @@
   import wepy from 'wepy'
   import Tips from '../../utils/Tips'
   import BalanceRecord from '../../components/balanceRecord'
+  import pay from '../../cloud/pay'
 
   export default class Balance extends wepy.page {
     config = {
@@ -118,7 +120,7 @@
       userInfo: {
         nickname: '加载中...'
       },
-      balance: '43.30',
+      wallet: null,
       balanceRecords: [
         {
           type: 1,
@@ -147,6 +149,7 @@
       if (userInfo) {
         this.userInfo = userInfo
       }
+      this.wallet = await pay.fetchWallet()
       this.$apply()
     }
   }
