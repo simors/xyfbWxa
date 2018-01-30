@@ -94,10 +94,11 @@
       <repeat for="{{sendRdSet}}" key="index" index="index" item="item">
         <sndRedEnvelopItem :sndRe.sync="item"/>
       </repeat>
-      <view class="{{sendHasmore ? 'more-view' : 'more-view-hidden'}}">
+      <view class="{{sendHasmore ? 'more-view' : 'more-view-hidden'}}" @tap.stop="clickLoadMoreSendFubao">
         <text class="more-text">--- 加载更多 ---</text>
       </view>
     </view>
+    <view style="height: 200rpx"/>
   </view>
 </template>
 
@@ -124,29 +125,7 @@
       recvRdUsers: [],
       recvLastTime: null,
       recvHasmore: true,
-      sendRdSet: [
-        {
-          account: '500',
-          count: 8,
-          recvCnt: 4,
-          balance: 122.41,
-          createdAt: '2018-01-14 13:31:22'
-        },
-        {
-          account: '5000',
-          count: 12,
-          recvCnt: 10,
-          balance: 122.41,
-          createdAt: '2018-01-11 13:31:22'
-        },
-        {
-          account: '5000.00',
-          count: 9,
-          recvCnt: 9,
-          balance: 0,
-          createdAt: '2018-01-16 13:31:22'
-        },
-      ],
+      sendRdSet: [],
       sendLastTime: null,
       sendHasmore: true,
       limit: 10
@@ -156,13 +135,24 @@
     }
 
     methods = {
-      typeChange(e) {
+      async typeChange(e) {
         this.type = e.detail.value
+        if (this.type === 'rcv' && this.recvRdUsers.length == 0) {
+          await this.loadRecvedFubaos()
+        }
+        if (this.type === 'snd' && this.sendRdSet.length == 0) {
+          await this.loadSendFubaos()
+        }
         this.$apply()
       },
 
       async clickLoadMoreRecvFubao() {
         await this.loadMoreRecvedFubaos()
+        this.$apply()
+      },
+
+      async clickLoadMoreSendFubao() {
+        await this.loadMoreSendFubaos()
         this.$apply()
       }
     }
@@ -190,9 +180,37 @@
       let size = newRecvRds.length
       if (size > 0) {
         this.recvRdUsers.push(...newRecvRds)
+        this.recvLastTime = newRecvRds[size-1].createdAt
       }
       if (size < this.limit) {
         this.recvHasmore = false
+      }
+    }
+
+    async loadSendFubaos() {
+      Tips.loading()
+      this.sendRdSet = await fubao.fetchSendLuckyDip({limit: this.limit})
+      Tips.loaded()
+      let size = this.sendRdSet.length
+      if (size > 0) {
+        this.sendLastTime = this.sendRdSet[size-1].createdAt
+      }
+      if (size < this.limit) {
+        this.sendHasmore = false
+      }
+    }
+
+    async loadMoreSendFubaos() {
+      Tips.loading()
+      let newSendRds = await fubao.fetchSendLuckyDip({lastTime: this.sendLastTime, limit: this.limit})
+      Tips.loaded()
+      let size = newSendRds.length
+      if (size > 0) {
+        this.sendRdSet.push(...newSendRds)
+        this.sendLastTime = newSendRds[size-1].createdAt
+      }
+      if (size < this.limit) {
+        this.sendHasmore = false
       }
     }
 
