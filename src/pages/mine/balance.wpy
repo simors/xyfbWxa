@@ -100,7 +100,7 @@
       <text class="balance-tip">当前余额</text>
       <text class="balance-text">¥{{wallet.balance}}元</text>
 
-      <view class="balance-btn">
+      <view class="balance-btn" @tap.stop="confirmWithdraw" disabled="{{payDisabled}}">
         <text class="balance-btn-text">一键提现</text>
       </view>
     </view>
@@ -125,6 +125,7 @@
   import Tips from '../../utils/Tips'
   import BalanceRecord from '../../components/balanceRecord'
   import pay from '../../cloud/pay'
+  import * as errno from '../../utils/errno'
 
   export default class Balance extends wepy.page {
     config = {
@@ -143,7 +144,8 @@
       deals: [],
       lastTime: null,
       hasMore: true,
-      limit: 5
+      limit: 5,
+      payDisabled: false
     }
 
     computed = {
@@ -163,6 +165,36 @@
           this.deals.push(...deals)
           this.lastTime = deals[size-1].dealTime
         }
+        this.$apply()
+      },
+
+      async confirmWithdraw() {
+        let money = parseInt(this.wallet.balance)
+        if (money < 1) {
+          Tips.alert('余额不足1元')
+          return
+        }
+        this.payDisabled = true
+        this.$apply()
+        try {
+          await pay.reqWithdrawApply({amount: money})
+          Tips.success('提现申请成功')
+          setTimeout(() => {
+            wx.navigateBack({delta: 1})
+          }, 1500)
+        } catch (e) {
+          console.error('error in request withdraw', e)
+          if (e.code === errno.ERROR_NO_WECHAT) {
+            Tips.error('没有微信授权')
+          } else if (e.code === errno.ERROR_NOT_ENOUGH_MONEY) {
+            Tips.error('余额不足')
+          } else if (e.code === errno.ERROR_IN_WITHDRAW_PROCESS) {
+            Tips.error('已存在提现申请')
+          } else {
+            Tips.error('提现申请失败')
+          }
+        }
+        this.payDisabled = false
         this.$apply()
       }
     }
