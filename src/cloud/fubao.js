@@ -39,4 +39,11 @@ export default class fubao {
     }
     return await AV.Cloud.run('fubaoFetchRecvedFubao', params)
   }
+  
+  static async enableDrawLottery(payload) {
+    let params = {
+      luckyDipId: payload.luckyDipId
+    }
+    return await AV.Cloud.run('fubaoJudgeEnableDrawLottery', params)
+  }
 }
