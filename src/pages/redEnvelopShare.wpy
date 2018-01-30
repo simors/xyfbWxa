@@ -75,6 +75,7 @@
   import wepy from 'wepy'
   import PageFooter from '../components/pageFooter'
   import Tips from '../utils/Tips'
+  import fubao from '../cloud/fubao'
 
   export default class RedEnvelopShare extends wepy.page {
     config = {
@@ -86,6 +87,7 @@
     }
 
     data = {
+      luckyDipId: null,
       number: 0,
       remark: '恭喜发财，大吉大利'
     }
@@ -101,11 +103,12 @@
 
     onShareAppMessage () {
       const title = this.remark;
-      const url = '/pages/index';
+      const url = '/pages/gameFin?luckyDipId=' + this.luckyDipId
       return Tips.share(title, url, title);
     }
 
     onLoad(option) {
+      this.luckyDipId = option.luckyDipId
       this.number = option.redEnvlopNum
       this.remark = option.remark
     }

@@ -163,6 +163,10 @@
 <script>
   import wepy from 'wepy'
   const xyfbGame = require('../yxfbGame/xyfbGame')
+  import {WSS_DOMAIN, REQUEST_DRAW_LOTTERY} from '../utils/appConfig'
+  import Tips from '../utils/Tips'
+  import * as errno from '../utils/errno'
+  import fubao from '../cloud/fubao'
 
   export default class GameFin extends wepy.page {
     config = {
@@ -172,6 +176,7 @@
     components = {}
 
     data = {
+      userInfo: null,
       ctx: null,
       count: -1,
       walked: 0,
@@ -184,28 +189,79 @@
       rectListLength: 14,
       xyfb: undefined,
       hasred: false,
+      socketOpen: false,
+      money: 0,
+      luckyDip: null
     }
 
 
     methods = {
-      start(){
-        this.countStart = 3
-        this.countEnd = 3
-        this.isEnd = false
-        let xyfb = this.xyfb
-        xyfb.changeEnd(this.isEnd, this.hasred)
-        this.computeBox()
+      async start(){
+        try {
+          let enable = await fubao.enableDrawLottery({luckyDipId: this.luckyDip.id})
+          if (enable) {
+            if (this.socketOpen) {
+              this.sendDrawLotteryReq()
+            } else {
+              wx.connectSocket({
+                url: WSS_DOMAIN + 'operation/' + this.userInfo.id,
+                header:{
+                  'content-type': 'application/json'
+                },
+                method:"POST"
+              })
+              wx.onSocketOpen((res) => {
+                this.socketOpen = true
+                this.sendDrawLotteryReq()
+                console.log('WebSocket连接重新打开！')
+              })
+            }
+            this.countStart = 3
+            this.countEnd = 3
+            this.isEnd = false
+            let xyfb = this.xyfb
+            xyfb.changeEnd(this.isEnd, this.hasred)
+            this.computeBox()
+          }
+        } catch (e) {
+          console.log('e', e)
+          switch (e.code) {
+            case errno.ERROR_LUCKYDIP_GAME_OVER:
+              Tips.error('所有福包被抢走')
+              break
+            case errno.ERROR_LUCKYDIP_EXPIRE:
+              Tips.error('福包已过期')
+              break
+            case errno.ERROR_LUCKYDIP_PARTICIPANT_OVER:
+              Tips.error('抽奖机会已用完')
+              break
+            default:
+          }
+        }
       },
+
       test(){
       },
+
       ok(){
         this.isEnd = true
       },
+
       stop(){
         let xyfb = this.xyfb
         xyfb.stop()
       }
 
+    }
+
+    sendDrawLotteryReq() {
+      wx.sendSocketMessage({
+        data: JSON.stringify({
+          type: REQUEST_DRAW_LOTTERY,
+          userId: this.userInfo.id,
+          luckyDipId: this.luckyDip.id
+        })
+      })
     }
 
     //计算格子
@@ -245,13 +301,66 @@
       }
     }
 
-    onLoad() {
+    async onShow() {
+      this.userInfo = await this.$parent.getUserInfo()
+      let userId = this.userInfo.id
+      wx.connectSocket({
+        url: WSS_DOMAIN + 'operation/' + userId,
+        header:{
+          'content-type': 'application/json'
+        },
+        method:"POST"
+      })
+      wx.onSocketOpen((res) => {
+        this.socketOpen = true
+        console.log('WebSocket连接已打开！')
+      })
+      wx.onSocketError((res) => {
+        this.socketOpen = false
+        console.log('WebSocket连接打开失败，请检查！')
+      })
+      wx.onSocketMessage((res) => {
+        let lottery = JSON.parse(res.data)
+        if (lottery.errcode != 0) {
+          switch (lottery.errcode) {
+            case errno.ERROR_LUCKYDIP_GAME_OVER:
+              Tips.error('所有福包被抢走')
+              break
+            case errno.ERROR_LUCKYDIP_EXPIRE:
+              Tips.error('福包已过期')
+              break
+            case errno.ERROR_LUCKYDIP_PARTICIPANT_OVER:
+              Tips.error('抽奖机会已用完')
+              break
+            default:
+          }
+          return
+        }
+        this.money = lottery.money
+        console.log('收到服务器内容：money=' + this.money)
+      })
+      wx.onSocketClose((res) => {
+        this.socketOpen = false
+        console.log('WebSocket 已关闭！')
+      })
+    }
+
+    async onLoad(option) {
+      if (option.luckyDipId) {
+        Tips.loading()
+        this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: option.luckyDipId})
+        Tips.loaded()
+      }
       var context = this.ctx = wx.createCanvasContext('first');
       let xyfb = this.xyfb = new xyfbGame({
         cxt: this.ctx,
         id: 'first',
         balance: 100.5
       })
+    }
+
+    onUnload() {
+      wx.closeSocket()
     }
   }
 </script>

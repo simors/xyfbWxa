@@ -22,6 +22,7 @@ export default class user {
         encryptedData: wepyUser.encryptedData,
         iv: wepyUser.iv
       })
+      console.log('encryptedData', wepyUser.encryptedData)
       if (authData.uid) {
         await AV.User.signUpOrlogInWithAuthData(authData, 'lc_weapp_union')
       } else {
