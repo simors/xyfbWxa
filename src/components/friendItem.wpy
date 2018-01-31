@@ -52,7 +52,7 @@
 </style>
 
 <template>
-  <navigator class="item-view" url="/pages/mine/recvReDetail?luckyDipId={{fubao.luckyDip.id}}&nickname={{fubao.user.nickname}}&avatar={{fubao.user.avatar}}&money={{fubao.money}}">
+  <navigator class="item-view" url="/pages/mine/recvReDetail?luckyDipId={{fubao.luckyDip.id}}">
     <view class="header-view">
       <image src="{{fubao.user.avatar}}" class="avatar"/>
       <view class="text-view">

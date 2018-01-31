@@ -61,7 +61,7 @@ export default class pay {
     let params = {
       amount: payload.amount,
       channel: 'wx_lite',
-      applyType: pay.WITHDRAW_APPLY_TYPE.PROFIT
+      applyType: pay.WITHDRAW_APPLY_TYPE.WALLET_BALANCE
     }
     return await AV.Cloud.run('payCreateWithdrawApply', params)
   }

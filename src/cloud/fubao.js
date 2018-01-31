@@ -46,4 +46,11 @@ export default class fubao {
     }
     return await AV.Cloud.run('fubaoJudgeEnableDrawLottery', params)
   }
+  
+  static async fetchFubaoJoinUsers(payload) {
+    let params = {
+      luckyDipId: payload.luckyDipId
+    }
+    return await AV.Cloud.run('fubaoFetchFubaoJoinUsers', params)
+  }
 }

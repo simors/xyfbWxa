@@ -43,7 +43,7 @@
   }
 
   .balance-text {
-    font-size: 48px;
+    font-size: 30px;
     color: #fff;
     font-weight: bold;
     margin-top: 22rpx;
@@ -73,6 +73,22 @@
   .header-bottom-img {
     width: 100%;
   }
+
+  .more-view {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 32rpx;
+  }
+
+  .more-view-hidden {
+    display: none;
+  }
+
+  .more-text {
+    font-size: 12px;
+    color: #696668;
+  }
 </style>
 <template>
   <view class="container container-bg">
@@ -82,9 +98,9 @@
         <text class="nickname-text">{{ userInfo.nickname }}</text>
       </view>
       <text class="balance-tip">当前余额</text>
-      <text class="balance-text">¥{{balance}}元</text>
+      <text class="balance-text">¥{{wallet.balance}}元</text>
 
-      <view class="balance-btn">
+      <view class="balance-btn" @tap.stop="confirmWithdraw" disabled="{{payDisabled}}">
         <text class="balance-btn-text">一键提现</text>
       </view>
     </view>
@@ -93,10 +109,14 @@
     </view>
 
     <view>
-      <repeat for="{{balanceRecords}}" key="index" index="index" item="item">
+      <repeat for="{{deals}}" key="index" index="index" item="item">
         <balanceRecord :record.sync="item"/>
       </repeat>
+      <view class="{{hasMore ? 'more-view' : 'more-view-hidden'}}" @tap.stop="moreDealRecords">
+        <text class="more-text">--- 加载更多 ---</text>
+      </view>
     </view>
+    <view style="height: 200rpx"/>
   </view>
 </template>
 
@@ -104,6 +124,8 @@
   import wepy from 'wepy'
   import Tips from '../../utils/Tips'
   import BalanceRecord from '../../components/balanceRecord'
+  import pay from '../../cloud/pay'
+  import * as errno from '../../utils/errno'
 
   export default class Balance extends wepy.page {
     config = {
@@ -118,25 +140,63 @@
       userInfo: {
         nickname: '加载中...'
       },
-      balance: '43.30',
-      balanceRecords: [
-        {
-          type: 1,
-          account: 43.2,
-          createdAt: '2018-01-16 13:31:22'
-        },
-        {
-          type: 2,
-          account: 5.2,
-          createdAt: '2018-01-16 13:31:22'
-        }
-      ]
+      wallet: null,
+      deals: [],
+      lastTime: null,
+      hasMore: true,
+      limit: 5,
+      payDisabled: false
     }
 
     computed = {
     }
 
     methods = {
+      async moreDealRecords() {
+        if (!this.hasMore) {
+          return
+        }
+        let deals = await pay.fetchUserDealRecords({lastTime: this.lastTime, limit: this.limit})
+        let size = deals.length
+        if (size < this.limit) {
+          this.hasMore = false
+        }
+        if (size > 0) {
+          this.deals.push(...deals)
+          this.lastTime = deals[size-1].dealTime
+        }
+        this.$apply()
+      },
+
+      async confirmWithdraw() {
+        let money = parseInt(this.wallet.balance)
+        if (money < 1) {
+          Tips.alert('余额不足1元')
+          return
+        }
+        this.payDisabled = true
+        this.$apply()
+        try {
+          await pay.reqWithdrawApply({amount: money})
+          Tips.success('提现申请成功')
+          setTimeout(() => {
+            wx.navigateBack({delta: 1})
+          }, 1500)
+        } catch (e) {
+          console.error('error in request withdraw', e)
+          if (e.code === errno.ERROR_NO_WECHAT) {
+            Tips.error('没有微信授权')
+          } else if (e.code === errno.ERROR_NOT_ENOUGH_MONEY) {
+            Tips.error('余额不足')
+          } else if (e.code === errno.ERROR_IN_WITHDRAW_PROCESS) {
+            Tips.error('已存在提现申请')
+          } else {
+            Tips.error('提现申请失败')
+          }
+        }
+        this.payDisabled = false
+        this.$apply()
+      }
     }
 
     events = {
@@ -146,6 +206,17 @@
       let userInfo = await this.$parent.getUserInfo()
       if (userInfo) {
         this.userInfo = userInfo
+      }
+      Tips.loading()
+      this.wallet = await pay.fetchWallet()
+      this.deals = await pay.fetchUserDealRecords({limit: this.limit})
+      Tips.loaded()
+      let size = this.deals.length
+      if (size < this.limit) {
+        this.hasMore = false
+      }
+      if (size > 0) {
+        this.lastTime = this.deals[size-1].dealTime
       }
       this.$apply()
     }
