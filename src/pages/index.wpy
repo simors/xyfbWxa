@@ -292,5 +292,13 @@
     async onLoad() {
       await this.$parent.getUserInfo()
     }
+
+    onShareAppMessage () {
+      let userInfo = wepy.$instance.globalData.userInfo
+      const title = userInfo.nickname + '邀请你发个福包';
+      const url = '/pages/index'
+      const imageUrl = '/asset/png/share_bg.png'
+      return Tips.share(title, url, title, imageUrl);
+    }
   }
 </script>
