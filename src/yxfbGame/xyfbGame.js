@@ -114,7 +114,9 @@ function xyfbGame(opts) {
   let balance = this.balance = opts.balance
   let luckyDip = this.luckyDip = opts.luckyDip
   let count = 1
-  let animationR = 0
+  let animationR = this.animationR = 0
+  let loadingClock = this.loadingClock =undefined
+  // let animationClock = this.animationClock = undefined
   // for(let i = 0;i<config.rectList.length;i++){
   //   let roundNum = Math.round(Math.random()*11)
   //   config.rectList[i].src = xyfbImages['game_item_list'][roundNum]
@@ -126,6 +128,7 @@ function xyfbGame(opts) {
     drawBoxList();
     drawRedNum()
     drawIsEnd()
+    // console.log('here is clock')
     ctx.draw()
   }
 
@@ -153,7 +156,7 @@ function xyfbGame(opts) {
 
   //画大福包
   function drawIsEnd() {
-    if (isEnd && hasred) {
+    if (isEnd && hasred && animationR>=rectLine) {
         ctx.save()
         ctx.setTextAlign('left')
         ctx.setFillStyle('#FFFFFF')
@@ -193,7 +196,7 @@ function xyfbGame(opts) {
 
   function drawAnimation(item) {
     if(animationR<item.w){
-      animationR = animationR+10
+      animationR = animationR+1
     }
     ctx.save()
     ctx.arc(item.x+item.w/2, item.y+item.h/2, animationR, 0, 2*Math.PI)
@@ -225,9 +228,25 @@ function xyfbGame(opts) {
 
   var game = this.game = {}
   game.stop = () => {
+    isEnd = this.isEnd = false
+    hasred = this.hasred = false
+    animationR = this.animationR = 0
     clearInterval(loadingClock);
   }
-
+  //清除定时器
+  game.clear = () => {
+    isEnd = this.isEnd = false
+    hasred = this.hasred = false
+    animationR = this.animationR = 0
+    // clearInterval(loadingClock);
+  }
+  //生成定时器
+  game.start = () => {
+    isEnd = this.isEnd = false
+    hasred = this.hasred = false
+    animationR = this.animationR = 0
+    loadingClock = setInterval(refresh, 50)
+  }
   //修改选中盒子
   game.changeWalked = (result) => {
     walked = this.walked = result
@@ -243,7 +262,7 @@ function xyfbGame(opts) {
   }
 
   //开始动画
-  var loadingClock = setInterval(refresh, 50);
+  // var loadingClock = setInterval(refresh, 50);
 
 }
 
@@ -261,6 +280,14 @@ xyfbGame.prototype.changeEnd = function (item, item2) {
 
 xyfbGame.prototype.changeLuckyDip = function (item) {
   this.game.changeLuckyDip(item)
+}
+
+xyfbGame.prototype.clear = function () {
+  this.game.clear()
+}
+
+xyfbGame.prototype.start = function () {
+  this.game.start()
 }
 
 emitter.setup(xyfbGame.prototype);

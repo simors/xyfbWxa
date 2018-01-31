@@ -164,7 +164,7 @@
       </view>
     </view>
     <view class="buttonWrap">
-      <view class="backButton" @tap="stop">
+      <view class="backButton" @tap.stop="home">
         <image class="redMark" src="../asset/png/game_home.png"/>
         <text >首页</text>
       </view>
@@ -172,7 +172,7 @@
         <text class="redStart">开始</text>
         <image class="redMark" src="../asset/png/game_start.png"/>
       </view>
-      <view class="shareButton" @tap="stop">
+      <view class="shareButton" @tap.stop="share">
         <image class="redMark" src="../asset/png/game_share.png"/>
         <text >分享</text>
       </view>
@@ -243,7 +243,7 @@
               this.countEnd = 3
               this.isEnd = false
               let xyfb = this.xyfb
-              xyfb.changeEnd(this.isEnd, this.hasred)
+//              xyfb.start()
               this.computeBox()
             }
           } catch (e) {
@@ -265,10 +265,33 @@
       },
 
       test(){
+        if(this.isEnd&&(!this.rolling)){
+          let xyfb = this.xyfb
+          xyfb.clear()
+        }
       },
 
       ok(){
         this.isEnd = true
+      },
+
+      home(){
+        let xyfb = this.xyfb
+        xyfb.stop()
+        wx.reLaunch({
+          url: 'index'
+        })
+      },
+
+      clear(){
+        let xyfb = this.xyfb
+        xyfb.clear()
+      },
+
+      share(){
+        setTimeout(() => {
+          this.$navigate({url: '/pages/redEnvelopShare?luckyDipId=' + this.luckyDip.id + '&redEnvlopNum=' + this.luckyDip.count + '&remark=' + this.luckyDip.remark})
+        }, 1000)
       },
 
       stop(){
@@ -299,7 +322,7 @@
         if (this.countStart < 0) {
           this.computeBoxTimer = setTimeout(() => {
             this.computeBox()
-          }, 100)
+          }, 200)
         } else {
           this.countStart = this.countStart - 1
           this.computeBoxTimer = setTimeout(() => {
@@ -311,6 +334,8 @@
           let xyfb = this.xyfb
           if(this.money!=0){
             this.hasred = true
+          }else{
+            this.hasred = false
           }
           this.rolling = false
           xyfb.changeEnd(this.isEnd, this.hasred)
@@ -394,6 +419,7 @@
         balance: 100.5,
         luckyDip: this.luckyDip
       })
+      xyfb.start()
       this.$apply()
     }
 
