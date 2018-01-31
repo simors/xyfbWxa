@@ -21,73 +21,87 @@ var config = {
       y: 0,
       w: rectLine,
       h: rectLine,
+      src: xyfbImages['game_item_list'][1]
     }, {
       x: rectLine,
       y: 0,
       w: rectLine,
       h: rectLine,
+      src: xyfbImages['game_item_list'][2]
     }, {
       x: rectLine * 2,
       y: 0,
       w: rectLine,
       h: rectLine,
+      src: xyfbImages['game_item_list'][3]
     }, {
       x: rectLine * 3,
       y: 0,
       w: rectLine,
       h: rectLine,
+      src: xyfbImages['game_item_list'][4]
     }, {
       x: rectLine * 3,
       y: rectLine,
       w: rectLine,
       h: rectLine,
+      src: xyfbImages['game_item_list'][5]
     }, {
       x: rectLine * 3,
       y: rectLine * 2,
       w: rectLine,
       h: rectLine,
+      src: xyfbImages['game_item_list'][7]
     }, {
       x: rectLine * 3,
       y: rectLine * 3,
       w: rectLine,
       h: rectLine,
+      src: xyfbImages['game_item_list'][2]
     },
     {
       x: rectLine * 3,
       y: rectLine * 4,
       w: rectLine,
       h: rectLine,
+      src: xyfbImages['game_item_list'][1]
     }, {
       x: rectLine * 2,
       y: rectLine * 4,
       w: rectLine,
       h: rectLine,
+      src: xyfbImages['game_item_list'][4]
     }, {
       x: rectLine,
       y: rectLine * 4,
       w: rectLine,
       h: rectLine,
+      src: xyfbImages['game_item_list'][5]
     }, {
       x: 0,
       y: rectLine * 4,
       w: rectLine,
       h: rectLine,
+      src: xyfbImages['game_item_list'][6]
     },
     {
       x: 0,
       y: rectLine * 3,
       w: rectLine,
       h: rectLine,
+      src: xyfbImages['game_item_list'][7]
     }, {
       x: 0,
       y: rectLine * 2,
       w: rectLine,
       h: rectLine,
+      src: xyfbImages['game_item_list'][8]
     }, {
       x: 0,
       y: rectLine,
       w: rectLine,
       h: rectLine,
+      src: xyfbImages['game_item_list'][0]
     },
   ],
 };
@@ -98,7 +112,13 @@ function xyfbGame(opts) {
   var isEnd = this.isEnd = opts.isEnd
   let hasred = this.hasred = opts.hasred
   let balance = this.balance = opts.balance
+  let luckyDip = this.luckyDip = opts.luckyDip
   let count = 1
+  let animationR = 0
+  // for(let i = 0;i<config.rectList.length;i++){
+  //   let roundNum = Math.round(Math.random()*11)
+  //   config.rectList[i].src = xyfbImages['game_item_list'][roundNum]
+  // }
 
   //等待动画刷新事件
   var refresh = ()=> {
@@ -113,31 +133,33 @@ function xyfbGame(opts) {
   function drawText() {
     ctx.setFontSize(17*ratio)
     ctx.setFillStyle('#EBB52B')
-    ctx.fillText('按住【开始】按钮', rectLine+12*ratio, rectLine * 1.5)
-    ctx.fillText('开始找红包吧', rectLine+rectLine*0.2+12*ratio, rectLine * 2)
+    ctx.setTextAlign('center')
+    ctx.fillText('按住【开始】按钮', rectLine*2, rectLine * 1.5)
+    ctx.fillText('开始找福包吧', rectLine*2, rectLine * 2)
     ctx.setFontSize(15*ratio)
     ctx.setFillStyle('#EBB52B')
-    ctx.fillText('剩余金额： ¥'+balance, rectLine, rectLine * 3)
+    ctx.fillText('剩余金额： ¥'+luckyDip.balance, rectLine*2, rectLine * 3)
 
   }
 
-  //画红包数量
+  //画福包数量
   function drawRedNum() {
     ctx.setFontSize(12*ratio)
     ctx.setFillStyle('#EBB52B')
     ctx.drawImage(xyfbImages['game_receive_record_bg'].src, rectLine, rectLine*3+rectLine*0.2, rectLine *2, rectLine*0.8)
     ctx.drawImage(xyfbImages['game_receive_record'].src, rectLine, rectLine*3+rectLine*0.2, rectLine*0.6, rectLine*0.6)
-    ctx.fillText('已领7／8', rectLine*2, rectLine*3+rectLine*0.7)
+    ctx.fillText('已领'+(luckyDip.count-luckyDip.remain)+'/'+luckyDip.count, rectLine*2, rectLine*3+rectLine*0.7)
   }
 
-  //画大红包
+  //画大福包
   function drawIsEnd() {
-    if (isEnd) {
+    if (isEnd && hasred) {
         ctx.save()
+        ctx.setTextAlign('left')
         ctx.setFillStyle('#FFFFFF')
         ctx.setFontSize(24*ratio)
         ctx.drawImage(xyfbImages['share_bg'].src, 0, rectLine, rectLine*4, rectLine*3)
-        ctx.fillText('恭喜领到红包咯', rectLine, rectLine * 3)
+        ctx.fillText('恭喜领到福包咯', rectLine, rectLine * 3)
         ctx.restore()
     }
   }
@@ -167,7 +189,17 @@ function xyfbGame(opts) {
       ctx.lineTo(center.x+count,center.y)
       ctx.stroke()
       ctx.restore()
+  }
 
+  function drawAnimation(item) {
+    if(animationR<item.w){
+      animationR = animationR+10
+    }
+    ctx.save()
+    ctx.arc(item.x+item.w/2, item.y+item.h/2, animationR, 0, 2*Math.PI)
+    ctx.clip()
+    ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x - 1, item.y - 1, item.w - 3, item.h - 3)
+    ctx.restore()
   }
   //设置背景
   function drawBoxList() {
@@ -176,13 +208,17 @@ function xyfbGame(opts) {
       let item = rectList[i]
       if (isEnd == true && i == walked) {
         ctx.drawImage(xyfbImages['cellLight'].src, item.x, item.y, item.w, item.h)
-        ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["share_bg"].src, item.x - 1, item.y - 1, item.w - 3, item.h - 3)
+        // ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x - 1, item.y - 1, item.w - 3, item.h - 3)
         // drawLight(item)
+        drawAnimation(item)
       } else if (i == walked) {
         ctx.drawImage(xyfbImages['cellLight'].src, item.x, item.y, item.w, item.h)
+        ctx.drawImage(item.src, item.x, item.y, item.w, item.h)
 
       } else {
         ctx.drawImage(xyfbImages['bg'].src, item.x, item.y, item.w, item.h)
+         // drawAnimation(item)
+        ctx.drawImage(item.src, item.x, item.y, item.w, item.h)
       }
     }
   }
@@ -200,7 +236,10 @@ function xyfbGame(opts) {
   game.changeEnd = (item, item2) => {
     isEnd = this.isEnd = item
     hasred = this.hasred = item2
+  }
 
+  game.changeLuckyDip = (item)=>{
+    luckyDip = this.luckyDip = item
   }
 
   //开始动画
@@ -219,6 +258,11 @@ xyfbGame.prototype.changeWalked = function (item) {
 xyfbGame.prototype.changeEnd = function (item, item2) {
   this.game.changeEnd(item, item2)
 }
+
+xyfbGame.prototype.changeLuckyDip = function (item) {
+  this.game.changeLuckyDip(item)
+}
+
 emitter.setup(xyfbGame.prototype);
 
 module.exports = xyfbGame;

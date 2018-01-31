@@ -23,6 +23,8 @@
   .userinfo-avatar {
     width: 60rpx;
     height: 60rpx;
+    border-radius: 30rpx;
+    margin-right: 5rpx;
   }
 
   .gameBox {
@@ -70,6 +72,11 @@
     color: white;
   }
 
+  .userInfoRedAmount {
+    font-size: 40rpx;
+    color: white;
+  }
+
   .buttonWrap {
     display: flex;
     flex-direction: row;
@@ -87,7 +94,7 @@
     background: #D14D00;
     align-items: center;
     color: white;
-    justify-content: center;
+    justify-content: flex-start;
     border-radius: 60rpx;
     font-size: 28rpx;
     display: flex;
@@ -102,9 +109,14 @@
     background: #D14D00;
     align-items: center;
     color: white;
-    justify-content: center;
-    font-size: 78rpx;
+    justify-content: flex-start;
+    font-size: 56rpx;
     display: flex;
+    margin-right: 10rpx;
+    padding-left: 100rpx;
+  }
+
+  .redStart{
     margin-right: 10rpx;
   }
 
@@ -115,7 +127,7 @@
     background: #D14D00;
     align-items: center;
     color: white;
-    justify-content: center;
+    justify-content: flex-start;
     border-radius: 60rpx;
     font-size: 28rpx;
     display: flex;
@@ -123,7 +135,8 @@
 
   .redMark {
     width: 60rpx;
-    height: 60rpx;
+    height: 75rpx;
+    margin-left: -10rpx;
   }
 
 </style>
@@ -132,12 +145,12 @@
     <view class="gameContainer">
       <view class="gameInfo">
         <view class="ownerInfo">
-          <image class="userinfo-avatar" src="../asset/png/game_money_mark.png"/>
-          <view class="userInfoRedNum">大自然发了8个红包</view>
+          <image class="userinfo-avatar" src="{{userInfo.avatar}}"/>
+          <text class="userInfoRedNum">{{userInfo.nickname}}发了{{luckyDip.count}}个福包</text>
         </view>
         <view class="ownerInfo">
-          <image class="redMark" src="../asset/png/game_money_mark.png"/>
-          <view class="userInfoRedNum">大自然发了8个红包</view>
+          <image class="userinfo-avatar" src="../asset/png/game_money_mark.png"/>
+          <text class="userInfoRedAmount">{{luckyDip.amount}}</text>
         </view>
       </view>
       <view class="gameBox">
@@ -151,12 +164,19 @@
       </view>
     </view>
     <view class="buttonWrap">
-      <view class="backButton" @tap="stop">首页</view>
-      <view class="redButton" @touchstart="start" @touchend="ok">开始</view>
-      <view class="shareButton" @tap="stop">分享</view>
+      <view class="backButton" @tap="stop">
+        <image class="redMark" src="../asset/png/game_home.png"/>
+        <text >首页</text>
+      </view>
+      <view class="redButton" @touchstart="start" @touchend="ok">
+        <text class="redStart">开始</text>
+        <image class="redMark" src="../asset/png/game_start.png"/>
+      </view>
+      <view class="shareButton" @tap="stop">
+        <image class="redMark" src="../asset/png/game_share.png"/>
+        <text >分享</text>
+      </view>
     </view>
-
-
   </view>
 </template>
 
@@ -191,51 +211,55 @@
       hasred: false,
       socketOpen: false,
       money: 0,
-      luckyDip: null
+      luckyDip: null,
+      rolling: false
     }
 
 
     methods = {
       async start(){
-        try {
-          let enable = await fubao.enableDrawLottery({luckyDipId: this.luckyDip.id})
-          if (enable) {
-            if (this.socketOpen) {
-              this.sendDrawLotteryReq()
-            } else {
-              wx.connectSocket({
-                url: WSS_DOMAIN + 'operation/' + this.userInfo.id,
-                header:{
-                  'content-type': 'application/json'
-                },
-                method:"POST"
-              })
-              wx.onSocketOpen((res) => {
-                this.socketOpen = true
+        if(!this.rolling){
+          this.rolling = true
+          try {
+            let enable = await fubao.enableDrawLottery({luckyDipId: this.luckyDip.id})
+            if (enable) {
+              if (this.socketOpen) {
                 this.sendDrawLotteryReq()
-                console.log('WebSocket连接重新打开！')
-              })
+              } else {
+                wx.connectSocket({
+                  url: WSS_DOMAIN + 'operation/' + this.userInfo.id,
+                  header:{
+                    'content-type': 'application/json'
+                  },
+                  method:"POST"
+                })
+                wx.onSocketOpen((res) => {
+                  this.socketOpen = true
+                  this.sendDrawLotteryReq()
+                  console.log('WebSocket连接重新打开！')
+                })
+              }
+              this.countStart = 3
+              this.countEnd = 3
+              this.isEnd = false
+              let xyfb = this.xyfb
+              xyfb.changeEnd(this.isEnd, this.hasred)
+              this.computeBox()
             }
-            this.countStart = 3
-            this.countEnd = 3
-            this.isEnd = false
-            let xyfb = this.xyfb
-            xyfb.changeEnd(this.isEnd, this.hasred)
-            this.computeBox()
-          }
-        } catch (e) {
-          console.log('e', e)
-          switch (e.code) {
-            case errno.ERROR_LUCKYDIP_GAME_OVER:
-              Tips.error('所有福包被抢走')
-              break
-            case errno.ERROR_LUCKYDIP_EXPIRE:
-              Tips.error('福包已过期')
-              break
-            case errno.ERROR_LUCKYDIP_PARTICIPANT_OVER:
-              Tips.error('抽奖机会已用完')
-              break
-            default:
+          } catch (e) {
+            console.log('e', e)
+            switch (e.code) {
+              case errno.ERROR_LUCKYDIP_GAME_OVER:
+                Tips.error('所有福包被抢走')
+                break
+              case errno.ERROR_LUCKYDIP_EXPIRE:
+                Tips.error('福包已过期')
+                break
+              case errno.ERROR_LUCKYDIP_PARTICIPANT_OVER:
+                Tips.error('抽奖机会已用完')
+                break
+              default:
+            }
           }
         }
       },
@@ -285,7 +309,10 @@
       } else {
         if (this.countEnd < 0) {
           let xyfb = this.xyfb
-          this.hasred = true
+          if(this.money!=0){
+            this.hasred = true
+          }
+          this.rolling = false
           xyfb.changeEnd(this.isEnd, this.hasred)
         } else {
           this.count = this.count + 1
@@ -343,6 +370,11 @@
         this.socketOpen = false
         console.log('WebSocket 已关闭！')
       })
+      if(this.luckyDip){
+        this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: this.luckyDip.id})
+        let xyfb = this.xyfb
+        xyfb.changeLuckyDip(this.luckyDip)
+      }
       this.$apply()
     }
 
@@ -350,13 +382,17 @@
       if (option.luckyDipId) {
         Tips.loading()
         this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: option.luckyDipId})
+        this.luckyDip.amount = this.luckyDip.amount.toFixed(2)
+        this.luckyDip.balance = this.luckyDip.balance.toFixed(2)
+        console.log('luckyDip=====>',this.luckyDip)
         Tips.loaded()
       }
       var context = this.ctx = wx.createCanvasContext('first');
       let xyfb = this.xyfb = new xyfbGame({
         cxt: this.ctx,
         id: 'first',
-        balance: 100.5
+        balance: 100.5,
+        luckyDip: this.luckyDip
       })
       this.$apply()
     }

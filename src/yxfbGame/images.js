@@ -55,6 +55,21 @@ var gameImg = {
     height: '200',
     width: '300',
   },
+  "game_item_list": [
+    imageSrc+'game_item01.png',
+    imageSrc+'game_item02.png',
+    imageSrc+'game_item03.png',
+    imageSrc+'game_item04.png',
+    imageSrc+'game_item05.png',
+    imageSrc+'game_item06.png',
+    imageSrc+'game_item07.png',
+    imageSrc+'game_item08.png',
+    imageSrc+'game_item09.png',
+    imageSrc+'game_item10.png',
+    imageSrc+'game_item11.png',
+    imageSrc+'game_item12.png',
+  ],
+
 }
 
 module.exports = gameImg
