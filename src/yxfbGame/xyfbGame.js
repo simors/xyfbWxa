@@ -222,22 +222,24 @@ function xyfbGame(opts) {
 
   //画动画
   function drawAnimation(item) {
+    console.log('animationR===>',animationR)
     if(isEnd){
       if(animationR<item.w){
         animationR = animationR+4
-        ctx.save()
-        ctx.arc(item.x+item.w/2, item.y+item.h/2, animationR, 0, 2*Math.PI)
-        ctx.clip()
-        ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x - 1, item.y - 1, item.w - 3, item.h - 3)
-        ctx.restore()
+
       }else{
         if(opts&&opts.success){
           opts.success()
         }
       }
-
+      ctx.save()
+      ctx.arc(item.x+item.w/2, item.y+item.h/2, animationR, 0, 2*Math.PI)
+      ctx.clip()
+      ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x - 1, item.y - 1, item.w - 3, item.h - 3)
+      ctx.restore()
     }
   }
+
   //设置背景
   function drawBoxList() {
     let rectList = config['rectList']
@@ -287,8 +289,12 @@ function xyfbGame(opts) {
   }
   //修改结束
   game.changeEnd = (item, item2) => {
+    if(item==true){
+      animationR = this.animationR = 0
+    }
     isEnd = this.isEnd = item
     hasred = this.hasred = item2
+
   }
 
   game.changeLuckyDip = (item)=>{

@@ -162,7 +162,6 @@
     height: 574rpx;
     width: 722rpx;
     margin-left: 14rpx;
-
   }
 
   .modalContainer{
@@ -185,8 +184,37 @@
     display: block;
   }
 
-  .modalButton{
+  .modalButtonWrap{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20rpx;
+  }
 
+  .addDip{
+    width: 380rpx;
+    height: 110rpx;
+    background: #D14D00;
+    border: 10px solid #FF8B33;
+    border-radius: 100px;
+    font-size: 34rpx;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-bottom: 20rpx;
+    flex-direction:row;
+    display: flex;
+  }
+
+  .congratulate{
+    position: absolute;
+    top: 246rpx;
+    font-family: PingFangSC-Regular;
+    font-size: 34rpx;
+    color: #F20D2D;
+    z-index: 12;
   }
 
 </style>
@@ -196,7 +224,17 @@
       <view class="modalBody" @tap.stop="closeModal">
         <view class="modalContainer">
           <image class="modalImage" src="../asset/png/popup_game_envelopes.png"/>
-
+          <text class="congratulate">恭喜找到福包了！</text>
+          <view class="modalButtonWrap">
+            <view class="addDip" @tap.stop="closeModal">
+              <image class="redMark" src="../asset/png/game_home.png"/>
+              <text >继续</text>
+            </view>
+            <view class="addDip"  @tap.stop="home">
+              <image class="redMark" src="../asset/png/popup_game_add_envelopes.png"/>
+              <text >我也发一个</text>
+            </view>
+          </view>
         </view>
 
       </view>
@@ -329,6 +367,7 @@
 
       closeModal(){
         this.modalVisible = false
+        this.rolling = false
         let xyfb = this.xyfb
         xyfb.clear()
         console.log('this.modalVisible====>',this.modalVisible)
@@ -409,7 +448,6 @@
           }else{
             this.hasred = false
           }
-          this.rolling = false
           clearTimeout(this.computeBoxTimer)
           xyfb.changeEnd(this.isEnd, this.hasred)
         } else {
@@ -426,13 +464,28 @@
       }
     }
 
-    openModal(){
-      this.modalVisible = true
-      console.log('this.modalVisible====>',this.modalVisible)
-      this.$apply()
+    gameOver(){
+      if(this.money!=0){
+        this.modalVisible = true
+        console.log('this.modalVisible====>',this.modalVisible)
+        this.$apply()
+      }else{
+        Tips.error('没有抢到福包')
+        setTimeout(()=>{
+          let xyfb = this.xyfb
+          xyfb.clear()
+          this.rolling = false
+        },300)
+      }
     }
 
-
+    async refreshDip(){
+      if(this.luckyDip){
+        this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: this.luckyDip.id})
+        let xyfb = this.xyfb
+        xyfb.changeLuckyDip(this.luckyDip)
+      }
+    }
 
     async onShow() {
       this.userInfo = await this.$parent.getUserInfo()
@@ -470,26 +523,14 @@
           return
         }
         this.money = lottery.money
+        this.refreshDip()
         console.log('收到服务器内容：money=' + this.money)
       })
       wx.onSocketClose((res) => {
         this.socketOpen = false
         console.log('WebSocket 已关闭！')
       })
-      if(this.luckyDip){
-        this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: this.luckyDip.id})
-        let xyfb = this.xyfb
-        xyfb.changeLuckyDip(this.luckyDip)
-      }
       this.$apply()
-    }
-
-    async refreshDip(){
-      if(this.luckyDip){
-        this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: this.luckyDip.id})
-        let xyfb = this.xyfb
-        xyfb.changeLuckyDip(this.luckyDip)
-      }
     }
 
     async onLoad(option) {
@@ -510,9 +551,8 @@
         id: 'first',
         balance: 100.5,
         luckyDip: this.luckyDip,
-        success: async ()=>{
-          this.openModal()
-          this.refreshDip()
+        success: ()=>{
+          this.gameOver()
         }
       })
       xyfb.start()
