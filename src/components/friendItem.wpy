@@ -54,9 +54,9 @@
 <template>
   <navigator class="item-view" url="/pages/mine/recvReDetail?luckyDipId={{fubao.luckyDip.id}}">
     <view class="header-view">
-      <image src="{{fubao.user.avatar}}" class="avatar"/>
+      <image src="{{fubao.luckyDip.user.avatar}}" class="avatar"/>
       <view class="text-view">
-        <text class="name-text">{{fubao.user.nickname}}</text>
+        <text class="name-text">{{fubao.luckyDip.user.nickname}}</text>
         <text class="time-text">{{fubao.createdAt}}</text>
       </view>
     </view>
