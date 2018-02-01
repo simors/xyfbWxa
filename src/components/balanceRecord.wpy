@@ -40,12 +40,13 @@
       <text wx:if="{{record.dealType === 1}}" class="tip-text">发福包</text>
       <text wx:if="{{record.dealType === 2}}" class="tip-text">收福包</text>
       <text wx:if="{{record.dealType === 3}}" class="tip-text">余额提现</text>
+      <text wx:if="{{record.dealType === 4}}" class="tip-text">福包退款</text>
       <text class="time-text">{{record.dealTime}}</text>
     </view>
     <view wx:if="{{record.dealType === 1 || record.dealType === 3}}" class="flex-column justify-center">
       <text class="minus-money-text">-¥{{record.cost}}</text>
     </view>
-    <view wx:if="{{record.dealType === 2}}" class="flex-column justify-center">
+    <view wx:if="{{record.dealType === 2 || record.dealType === 4}}" class="flex-column justify-center">
       <text class="add-money-text">+¥{{record.cost}}</text>
     </view>
   </view>

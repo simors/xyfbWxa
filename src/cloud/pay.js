@@ -8,6 +8,7 @@ export default class pay {
     SEND_FUBAO: 1,    // 发福包
     RECV_FUBAO: 2,    // 抢到福包
     WITHDRAW: 3,      // 提现
+    FUBAO_BALANCE: 4, // 未领取的福包余额入账
   }
   
   static WALLET_PROCESS_TYPE = {
