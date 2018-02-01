@@ -188,6 +188,11 @@
     }
 
     async withdrawRequest() {
+      let money = parseInt(this.wallet.balance)
+      if (money < 1) {
+        Tips.alert('余额不足1元')
+        return
+      }
       this.payDisabled = true
       this.$apply()
       try {
