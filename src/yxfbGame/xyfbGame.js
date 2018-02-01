@@ -195,14 +195,16 @@ function xyfbGame(opts) {
   }
 
   function drawAnimation(item) {
-    if(animationR<item.w){
-      animationR = animationR+1
+    if(isEnd){
+      if(animationR<item.w){
+        animationR = animationR+4
+      }
+      ctx.save()
+      ctx.arc(item.x+item.w/2, item.y+item.h/2, animationR, 0, 2*Math.PI)
+      ctx.clip()
+      ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x - 1, item.y - 1, item.w - 3, item.h - 3)
+      ctx.restore()
     }
-    ctx.save()
-    ctx.arc(item.x+item.w/2, item.y+item.h/2, animationR, 0, 2*Math.PI)
-    ctx.clip()
-    ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x - 1, item.y - 1, item.w - 3, item.h - 3)
-    ctx.restore()
   }
   //设置背景
   function drawBoxList() {

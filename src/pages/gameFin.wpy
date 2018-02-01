@@ -168,7 +168,7 @@
         <image class="redMark" src="../asset/png/game_home.png"/>
         <text >首页</text>
       </view>
-      <view class="redButton" @touchstart="start" @touchend="ok">
+      <view class="redButton" @touchstart="start" @touchend="ok" @tap.stop="ok">
         <text class="redStart">开始</text>
         <image class="redMark" src="../asset/png/game_start.png"/>
       </view>
@@ -243,6 +243,7 @@
               this.countEnd = 3
               this.isEnd = false
               let xyfb = this.xyfb
+              xyfb.changeEnd(false,false)
 //              xyfb.start()
               this.computeBox()
             }
@@ -338,6 +339,7 @@
             this.hasred = false
           }
           this.rolling = false
+          clearTimeout(this.computeBoxTimer)
           xyfb.changeEnd(this.isEnd, this.hasred)
         } else {
           this.count = this.count + 1
@@ -424,6 +426,8 @@
     }
 
     onUnload() {
+      let xyfb = this.xyfb
+      xyfb.stop()
       wx.closeSocket()
     }
   }
