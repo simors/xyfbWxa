@@ -174,32 +174,42 @@
           Tips.alert('余额不足1元')
           return
         }
-        this.payDisabled = true
-        this.$apply()
+        let realMoney = Number(Number(money) * 0.98).toFixed(2)
         try {
-          await pay.reqWithdrawApply({amount: money})
-          Tips.success('提现申请成功')
-          setTimeout(() => {
-            wx.navigateBack({delta: 1})
-          }, 1500)
+          await Tips.confirm('可提现金额为' + money + '元，扣除2%手续费后，实际可到账金额为' + realMoney + '元。是否继续提现？')
+          await this.withdrawRequest()
         } catch (e) {
-          console.error('error in request withdraw', e)
-          if (e.code === errno.ERROR_NO_WECHAT) {
-            Tips.error('没有微信授权')
-          } else if (e.code === errno.ERROR_NOT_ENOUGH_MONEY) {
-            Tips.error('余额不足')
-          } else if (e.code === errno.ERROR_IN_WITHDRAW_PROCESS) {
-            Tips.error('已存在提现申请')
-          } else {
-            Tips.error('提现申请失败')
-          }
+
         }
-        this.payDisabled = false
-        this.$apply()
       }
     }
 
     events = {
+    }
+
+    async withdrawRequest() {
+      this.payDisabled = true
+      this.$apply()
+      try {
+        await pay.reqWithdrawApply({amount: money})
+        Tips.success('提现申请成功')
+        setTimeout(() => {
+          wx.navigateBack({delta: 1})
+        }, 1500)
+      } catch (e) {
+        console.error('error in request withdraw', e)
+        if (e.code === errno.ERROR_NO_WECHAT) {
+          Tips.error('没有微信授权')
+        } else if (e.code === errno.ERROR_NOT_ENOUGH_MONEY) {
+          Tips.error('余额不足')
+        } else if (e.code === errno.ERROR_IN_WITHDRAW_PROCESS) {
+          Tips.error('已存在提现申请')
+        } else {
+          Tips.error('提现申请失败')
+        }
+      }
+      this.payDisabled = false
+      this.$apply()
     }
 
     async onLoad() {
