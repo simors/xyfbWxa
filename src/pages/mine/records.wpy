@@ -248,6 +248,7 @@
       Tips.loading()
       this.sendRdSet = await fubao.fetchSendLuckyDip({limit: this.limit})
       Tips.loaded()
+      console.log('sendRdSet', this.sendRdSet)
       let size = this.sendRdSet.length
       if (size > 0) {
         this.sendLastTime = this.sendRdSet[size-1].createdAt

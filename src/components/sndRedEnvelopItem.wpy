@@ -46,7 +46,7 @@
 </style>
 
 <template>
-  <navigator class="{{sndRe.count === sndRe.recvCnt ? 're-item-view-disable' : 're-item-view'}}" url="/pages/gameFin?luckyDipId={{sndRe.id}}">
+  <navigator class="{{sndRe.remain === 0 || sndRe.isExpire ? 're-item-view-disable' : 're-item-view'}}" url="/pages/gameFin?luckyDipId={{sndRe.id}}">
     <image class="header-bg-img" src="/asset/png/red_envelopes_mine.png">
       <text class="account-text">{{sndRe.amount}}</text>
     </image>
