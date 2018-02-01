@@ -294,7 +294,9 @@
     }
 
     async onLoad() {
+      Tips.loading('正在登录')
       await this.$parent.getUserInfo()
+      Tips.loaded()
     }
 
     onShareAppMessage () {
