@@ -139,9 +139,68 @@
     margin-left: -10rpx;
   }
 
+  .modalBody{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+  }
+
+  .showModal{
+    visibility: visible;
+  }
+  .modal{
+    visibility: hidden;
+
+  }
+
+  .modalImage{
+    height: 574rpx;
+    width: 722rpx;
+    margin-left: 14rpx;
+
+  }
+
+  .modalContainer{
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    background: rgba(0, 0, 0, 0);
+    transform: translate3d(-50%, -50%, 0);
+    transform-origin: center;
+    transition: all 0.4s ease;
+    z-index: 11;
+    opacity: 0;
+  }
+
+  .showModal .modalContainer {
+    opacity: 1;
+  }
+
+  .showModal .modalBody {
+    display: block;
+  }
+
+  .modalButton{
+
+  }
+
 </style>
 <template>
   <view class="container gameBody">
+    <view class="{{modalVisible? 'showModal':'modal'}}">
+      <view class="modalBody" @tap.stop="closeModal">
+        <view class="modalContainer">
+          <image class="modalImage" src="../asset/png/popup_game_envelopes.png"/>
+
+        </view>
+
+      </view>
+    </view>
     <view class="gameContainer">
       <view class="gameInfo">
         <view class="ownerInfo">
@@ -212,7 +271,8 @@
       socketOpen: false,
       money: 0,
       luckyDip: null,
-      rolling: false
+      rolling: false,
+      modalVisible: false,
     }
 
 
@@ -221,6 +281,9 @@
         if(!this.rolling){
           this.rolling = true
           try {
+            this.countStart = 3
+            this.countEnd = 3
+            this.isEnd = false
             let enable = await fubao.enableDrawLottery({luckyDipId: this.luckyDip.id})
             if (enable) {
               if (this.socketOpen) {
@@ -239,15 +302,14 @@
                   console.log('WebSocket连接重新打开！')
                 })
               }
-              this.countStart = 3
-              this.countEnd = 3
-              this.isEnd = false
+
               let xyfb = this.xyfb
               xyfb.changeEnd(false,false)
 //              xyfb.start()
               this.computeBox()
             }
           } catch (e) {
+            this.rolling = false
             console.log('e', e)
             switch (e.code) {
               case errno.ERROR_LUCKYDIP_GAME_OVER:
@@ -263,6 +325,14 @@
             }
           }
         }
+      },
+
+      closeModal(){
+        this.modalVisible = false
+        let xyfb = this.xyfb
+        xyfb.clear()
+        console.log('this.modalVisible====>',this.modalVisible)
+        this.$apply()
       },
 
       test(){
@@ -303,6 +373,7 @@
     }
 
     sendDrawLotteryReq() {
+      console.log('send=========>')
       wx.sendSocketMessage({
         data: JSON.stringify({
           type: REQUEST_DRAW_LOTTERY,
@@ -355,6 +426,14 @@
       }
     }
 
+    openModal(){
+      this.modalVisible = true
+      console.log('this.modalVisible====>',this.modalVisible)
+      this.$apply()
+    }
+
+
+
     async onShow() {
       this.userInfo = await this.$parent.getUserInfo()
       let userId = this.userInfo.id
@@ -405,6 +484,14 @@
       this.$apply()
     }
 
+    async refreshDip(){
+      if(this.luckyDip){
+        this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: this.luckyDip.id})
+        let xyfb = this.xyfb
+        xyfb.changeLuckyDip(this.luckyDip)
+      }
+    }
+
     async onLoad(option) {
       Tips.loading('正在登录')
       await this.$parent.getUserInfo()
@@ -422,7 +509,11 @@
         cxt: this.ctx,
         id: 'first',
         balance: 100.5,
-        luckyDip: this.luckyDip
+        luckyDip: this.luckyDip,
+        success: async ()=>{
+          this.openModal()
+          this.refreshDip()
+        }
       })
       xyfb.start()
       this.$apply()

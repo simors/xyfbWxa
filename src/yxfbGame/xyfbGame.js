@@ -117,41 +117,67 @@ function xyfbGame(opts) {
   let animationR = this.animationR = 0
   let loadingClock = this.loadingClock =undefined
   // let animationClock = this.animationClock = undefined
-  // for(let i = 0;i<config.rectList.length;i++){
-  //   let roundNum = Math.round(Math.random()*11)
-  //   config.rectList[i].src = xyfbImages['game_item_list'][roundNum]
-  // }
+  for(let i = 0;i<config.rectList.length;i++){
+    let roundNum = Math.round(Math.random()*11)
+    config.rectList[i].src = xyfbImages['game_item_list'][roundNum]
+  }
 
   //等待动画刷新事件
   var refresh = ()=> {
     drawText()
     drawBoxList();
     drawRedNum()
-    drawIsEnd()
+    // drawIsEnd()
     // console.log('here is clock')
     ctx.draw()
   }
 
   //文字
   function drawText() {
-    ctx.setFontSize(17*ratio)
-    ctx.setFillStyle('#EBB52B')
-    ctx.setTextAlign('center')
-    ctx.fillText('按住【开始】按钮', rectLine*2, rectLine * 1.5)
-    ctx.fillText('开始找福包吧', rectLine*2, rectLine * 2)
-    ctx.setFontSize(15*ratio)
-    ctx.setFillStyle('#EBB52B')
-    ctx.fillText('剩余金额： ¥'+luckyDip.balance, rectLine*2, rectLine * 3)
+    if(luckyDip&&luckyDip.remain<=0){
+      ctx.setFontSize(17*ratio)
+      ctx.setFillStyle('#EBB52B')
+      ctx.setTextAlign('center')
+      ctx.fillText('这波福包已领完', rectLine*2, rectLine * 1.8)
+      ctx.fillText('大家还在等你的福', rectLine*2, rectLine * 2.2)
+      ctx.fillText('包呢！', rectLine*2, rectLine * 2.6)
+    }else{
+      ctx.setFontSize(17*ratio)
+      ctx.setFillStyle('#EBB52B')
+      ctx.setTextAlign('center')
+      ctx.fillText('按住【开始】按钮', rectLine*2, rectLine * 1.5)
+      ctx.fillText('开始找福包吧', rectLine*2, rectLine * 2)
+      ctx.setFontSize(15*ratio)
+      ctx.setFillStyle('#EBB52B')
+      ctx.fillText('剩余金额： ¥'+luckyDip.balance, rectLine*2, rectLine * 3)
+    }
 
   }
 
   //画福包数量
   function drawRedNum() {
+    ctx.setTextAlign('right')
     ctx.setFontSize(12*ratio)
     ctx.setFillStyle('#EBB52B')
     ctx.drawImage(xyfbImages['game_receive_record_bg'].src, rectLine, rectLine*3+rectLine*0.2, rectLine *2, rectLine*0.8)
     ctx.drawImage(xyfbImages['game_receive_record'].src, rectLine, rectLine*3+rectLine*0.2, rectLine*0.6, rectLine*0.6)
-    ctx.fillText('已领'+(luckyDip.count-luckyDip.remain)+'/'+luckyDip.count, rectLine*2, rectLine*3+rectLine*0.7)
+    if(luckyDip.count==100){
+      ctx.fillText('已领',rectLine*2-12*ratio, rectLine*3+rectLine*0.7)
+      ctx.setFontSize(20*ratio)
+      ctx.setFillStyle('#EBB52B')
+      ctx.fillText((luckyDip.count-luckyDip.remain)+'/'+luckyDip.count, rectLine*3-12*ratio, rectLine*3+rectLine*0.7)
+    }else if(luckyDip.count<10){
+      ctx.fillText('已领',rectLine*2+24*ratio, rectLine*3+rectLine*0.7)
+      ctx.setFontSize(20*ratio)
+      ctx.setFillStyle('#EBB52B')
+      ctx.fillText((luckyDip.count-luckyDip.remain)+'/'+luckyDip.count, rectLine*3-15*ratio, rectLine*3+rectLine*0.7)
+    }else {
+      ctx.fillText('已领',rectLine*2, rectLine*3+rectLine*0.7)
+      ctx.setFontSize(20*ratio)
+      ctx.setFillStyle('#EBB52B')
+      ctx.fillText((luckyDip.count-luckyDip.remain)+'/'+luckyDip.count, rectLine*3-12*ratio, rectLine*3+rectLine*0.7)
+
+    }
   }
 
   //画大福包
@@ -194,16 +220,22 @@ function xyfbGame(opts) {
       ctx.restore()
   }
 
+  //画动画
   function drawAnimation(item) {
     if(isEnd){
       if(animationR<item.w){
         animationR = animationR+4
+        ctx.save()
+        ctx.arc(item.x+item.w/2, item.y+item.h/2, animationR, 0, 2*Math.PI)
+        ctx.clip()
+        ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x - 1, item.y - 1, item.w - 3, item.h - 3)
+        ctx.restore()
+      }else{
+        if(opts&&opts.success){
+          opts.success()
+        }
       }
-      ctx.save()
-      ctx.arc(item.x+item.w/2, item.y+item.h/2, animationR, 0, 2*Math.PI)
-      ctx.clip()
-      ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x - 1, item.y - 1, item.w - 3, item.h - 3)
-      ctx.restore()
+
     }
   }
   //设置背景
