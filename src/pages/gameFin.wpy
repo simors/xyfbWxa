@@ -483,8 +483,8 @@
     }
 
     gameOver(){
-//      let xyfb = this.xyfb
-      this.xyfb.stop()
+      let xyfb = this.xyfb
+      xyfb.stop()
       if(this.money!=0){
         this.modalVisible = true
         console.log('this.modalVisible====>',this.modalVisible)
@@ -576,8 +576,8 @@
     }
 
     onUnload() {
-//      let xyfb = this.xyfb
-      this.xyfb.stop()
+      let xyfb = this.xyfb
+      xyfb.stop()
       wx.closeSocket()
     }
   }
