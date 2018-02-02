@@ -127,10 +127,6 @@
       <image class="input-bottom-img" src="/asset/png/home_edge.png" mode="widthFix" />
     </view>
 
-    <navigator style="z-index: 100;" url="/pages/gameFin?luckyDipId=5a7400b4fe88c2003c77f6b0">
-      <text>游戏</text>
-    </navigator>
-
     <view class="flex-row flex items-center justify-center" style="margin-bottom: 24px;">
       <text style="font-size: 12px; color: #fff;">24小时后未领取的福包将退回到您的余额</text>
     </view>
