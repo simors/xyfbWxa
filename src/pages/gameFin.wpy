@@ -340,7 +340,8 @@
             this.countStart = 3
             this.countEnd = 3
             this.isEnd = false
-            let enable = await fubao.enableDrawLottery({luckyDipId: this.luckyDip.id})
+//            let enable = await fubao.enableDrawLottery({luckyDipId: this.luckyDip.id})
+            let enable = true
             if (enable) {
               if (this.socketOpen) {
                 this.sendDrawLotteryReq()
@@ -431,13 +432,14 @@
 
     sendDrawLotteryReq() {
       console.log('send=========>')
-      wx.sendSocketMessage({
-        data: JSON.stringify({
-          type: REQUEST_DRAW_LOTTERY,
-          userId: this.userInfo.id,
-          luckyDipId: this.luckyDip.id
-        })
-      })
+//      wx.sendSocketMessage({
+//        data: JSON.stringify({
+//          type: REQUEST_DRAW_LOTTERY,
+//          userId: this.userInfo.id,
+//          luckyDipId: this.luckyDip.id
+//        })
+//      })
+      this.money = 0.02
     }
 
     //计算格子
@@ -497,7 +499,7 @@
 
     async refreshDip(){
       if(this.luckyDip){
-        this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: this.luckyDip.id})
+//        this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: this.luckyDip.id})
         let xyfb = this.xyfb
         xyfb.changeLuckyDip(this.luckyDip)
       }
@@ -554,7 +556,19 @@
       Tips.loaded()
       if (option.luckyDipId) {
         Tips.loading()
-        this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: option.luckyDipId})
+//        this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: option.luckyDipId})
+        this.luckyDip = {
+          id: '5a7400b4fe88c2003c77f6b0',
+          amount: 1.00,
+          balance: 0.94,
+          count: 100,
+          remain: 96,
+          user: {
+            id: '5a60c5ae0b6160004381db7f',
+            avatar: "https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIOKKW6LBI4TUIHNRtjKHY5J4D7BPdfn4zneZUpfOzwL4RiaBujDlJicQdj9J4GJUe48zhWBQmAAsDg/0",
+            nickname: "绿蚁网络科技－杨阳"
+          }
+        }
         this.luckyDip.amount = this.luckyDip.amount.toFixed(2)
         this.luckyDip.balance = this.luckyDip.balance.toFixed(2)
         console.log('luckyDip=====>',this.luckyDip)
