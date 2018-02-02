@@ -236,7 +236,7 @@ function xyfbGame(opts) {
       ctx.save()
       ctx.arc(item.x+item.w/2, item.y+item.h/2, animationR, 0, 2*Math.PI)
       ctx.clip()
-      ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x - 1, item.y - 1, item.w - 3, item.h - 3)
+      ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x + 10, item.y + 10, item.w - 20, item.h - 20)
       ctx.restore()
     }
   }
@@ -262,7 +262,7 @@ function xyfbGame(opts) {
       }
     }
   }
-
+  refresh()
   var game = this.game = {}
 
   game.stop = ()=>{

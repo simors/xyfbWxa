@@ -311,7 +311,11 @@
     components = {}
 
     data = {
-      userInfo: null,
+      userInfo: {
+        id: '5a60c5ae0b6160004381db7f',
+        avatar: "https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIOKKW6LBI4TUIHNRtjKHY5J4D7BPdfn4zneZUpfOzwL4RiaBujDlJicQdj9J4GJUe48zhWBQmAAsDg/0",
+        nickname: "绿蚁网络科技－杨阳"
+      },
       ctx: null,
       count: -1,
       walked: 0,
@@ -362,6 +366,7 @@
 
               let xyfb = this.xyfb
 //              xyfb.changeEnd(false,false)
+//              xyfb.stop()
               xyfb.start()
               this.computeBox()
             }
@@ -389,7 +394,6 @@
         this.rolling = false
         let xyfb = this.xyfb
         xyfb.clear()
-        console.log('this.modalVisible====>',this.modalVisible)
         this.$apply()
       },
 
@@ -492,7 +496,7 @@
         console.log('this.modalVisible====>',this.modalVisible)
         this.$apply()
       }else{
-//        Tips.error('没有抢到福包')
+        Tips.error('没有抢到福包')
           this.rolling = false
       }
     }
@@ -552,7 +556,7 @@
 
     async onLoad(option) {
       Tips.loading('正在登录')
-      await this.$parent.getUserInfo()
+//      await this.$parent.getUserInfo()
       Tips.loaded()
       if (option.luckyDipId) {
         Tips.loading()
@@ -584,8 +588,6 @@
           this.gameOver()
         }
       })
-      console.log('start===>')
-      xyfb.start()
       this.$apply()
     }
 
