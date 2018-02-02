@@ -211,10 +211,26 @@
   .congratulate{
     position: absolute;
     top: 246rpx;
-    font-family: PingFangSC-Regular;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
     font-size: 34rpx;
     color: #F20D2D;
-    z-index: 12;
+    z-index: 14;
+  }
+
+  .redGet{
+    position: absolute;
+    top: 83rpx;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    font-family: PingFangSC-Semibold;
+    font-size: 64rpx;
+    color: #FFFFFF;
+    letter-spacing: 0;
   }
 
 </style>
@@ -225,6 +241,8 @@
         <view class="modalContainer">
           <image class="modalImage" src="../asset/png/popup_game_envelopes.png"/>
           <text class="congratulate">恭喜找到福包了！</text>
+          <text class="redGet">{{'¥'+money}}</text>
+
           <view class="modalButtonWrap">
             <view class="addDip" @tap.stop="closeModal">
               <image class="redMark" src="../asset/png/game_home.png"/>
@@ -265,7 +283,7 @@
         <image class="redMark" src="../asset/png/game_home.png"/>
         <text >首页</text>
       </view>
-      <view class="redButton" @touchstart="start" @touchend="ok" @tap.stop="ok">
+      <view class="redButton" @touchstart="start" @touchend="ok" >
         <text class="redStart">开始</text>
         <image class="redMark" src="../asset/png/game_start.png"/>
       </view>
@@ -342,8 +360,8 @@
               }
 
               let xyfb = this.xyfb
-              xyfb.changeEnd(false,false)
-//              xyfb.start()
+//              xyfb.changeEnd(false,false)
+              xyfb.start()
               this.computeBox()
             }
           } catch (e) {
@@ -465,17 +483,15 @@
     }
 
     gameOver(){
+//      let xyfb = this.xyfb
+      this.xyfb.stop()
       if(this.money!=0){
         this.modalVisible = true
         console.log('this.modalVisible====>',this.modalVisible)
         this.$apply()
       }else{
-        Tips.error('没有抢到福包')
-        setTimeout(()=>{
-          let xyfb = this.xyfb
-          xyfb.clear()
+//        Tips.error('没有抢到福包')
           this.rolling = false
-        },300)
       }
     }
 
@@ -523,7 +539,6 @@
           return
         }
         this.money = lottery.money
-        this.refreshDip()
         console.log('收到服务器内容：money=' + this.money)
       })
       wx.onSocketClose((res) => {
@@ -555,13 +570,14 @@
           this.gameOver()
         }
       })
+      console.log('start===>')
       xyfb.start()
       this.$apply()
     }
 
     onUnload() {
-      let xyfb = this.xyfb
-      xyfb.stop()
+//      let xyfb = this.xyfb
+      this.xyfb.stop()
       wx.closeSocket()
     }
   }

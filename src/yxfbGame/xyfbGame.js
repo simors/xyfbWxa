@@ -115,8 +115,8 @@ function xyfbGame(opts) {
   let luckyDip = this.luckyDip = opts.luckyDip
   let count = 1
   let animationR = this.animationR = 0
-  let loadingClock = this.loadingClock =undefined
-  // let animationClock = this.animationClock = undefined
+  let loadingClock = this.loadingClock = undefined
+  let animationClock = this.animationClock = undefined
   for(let i = 0;i<config.rectList.length;i++){
     let roundNum = Math.round(Math.random()*11)
     config.rectList[i].src = xyfbImages['game_item_list'][roundNum]
@@ -222,15 +222,16 @@ function xyfbGame(opts) {
 
   //画动画
   function drawAnimation(item) {
-    console.log('animationR===>',animationR)
     if(isEnd){
       if(animationR<item.w){
         animationR = animationR+4
 
       }else{
+        // clearInterval(loadingClock)
         if(opts&&opts.success){
           opts.success()
         }
+
       }
       ctx.save()
       ctx.arc(item.x+item.w/2, item.y+item.h/2, animationR, 0, 2*Math.PI)
@@ -263,32 +264,35 @@ function xyfbGame(opts) {
   }
 
   var game = this.game = {}
-  game.stop = () => {
-    isEnd = this.isEnd = false
-    hasred = this.hasred = false
-    animationR = this.animationR = 0
+
+  game.stop = ()=>{
+    // isEnd = this.isEnd = false
+    // hasred = this.hasred = false
+    // animationR = this.animationR = 0
     clearInterval(loadingClock);
+    console.log('loadingClock========>',loadingClock)
   }
   //清除定时器
-  game.clear = () => {
+  game.clear = ()=>{
     isEnd = this.isEnd = false
     hasred = this.hasred = false
     animationR = this.animationR = 0
     // clearInterval(loadingClock);
   }
   //生成定时器
-  game.start = () => {
+  game.start = ()=> {
     isEnd = this.isEnd = false
     hasred = this.hasred = false
     animationR = this.animationR = 0
     loadingClock = setInterval(refresh, 50)
+    console.log('loadingClock========>',loadingClock)
   }
   //修改选中盒子
-  game.changeWalked = (result) => {
+  game.changeWalked = (result)=>{
     walked = this.walked = result
   }
   //修改结束
-  game.changeEnd = (item, item2) => {
+  game.changeEnd = (item, item2)=>{
     if(item==true){
       animationR = this.animationR = 0
     }
