@@ -239,17 +239,17 @@
     <view class="{{modalVisible? 'showModal':'modal'}}">
       <view class="modalBody" @tap.stop="closeModal">
         <view class="modalContainer">
-          <image class="modalImage" src="../asset/png/popup_game_envelopes.png"/>
+          <image class="modalImage" src="/asset/png/popup_game_envelopes.png"/>
           <text class="congratulate">恭喜找到福包了！</text>
           <text class="redGet">{{'¥'+money}}</text>
 
           <view class="modalButtonWrap">
             <view class="addDip" @tap.stop="closeModal">
-              <image class="redMark" src="../asset/png/game_home.png"/>
+              <image class="redMark" src="/asset/png/game_home.png"/>
               <text >继续</text>
             </view>
             <view class="addDip"  @tap.stop="home">
-              <image class="redMark" src="../asset/png/popup_game_add_envelopes.png"/>
+              <image class="redMark" src="/asset/png/popup_game_add_envelopes.png"/>
               <text >我也发一个</text>
             </view>
           </view>
@@ -264,7 +264,7 @@
           <text class="userInfoRedNum">{{userInfo.nickname}}发了{{luckyDip.count}}个福包</text>
         </view>
         <view class="ownerInfo">
-          <image class="userinfo-avatar" src="../asset/png/game_money_mark.png"/>
+          <image class="userinfo-avatar" src="/asset/png/game_money_mark.png"/>
           <text class="userInfoRedAmount">{{luckyDip.amount}}</text>
         </view>
       </view>
@@ -280,15 +280,15 @@
     </view>
     <view class="buttonWrap">
       <view class="backButton" @tap.stop="home">
-        <image class="redMark" src="../asset/png/game_home.png"/>
+        <image class="redMark" src="/asset/png/game_home.png"/>
         <text >首页</text>
       </view>
       <view class="redButton" @touchstart="start" @touchend="ok" >
         <text class="redStart">开始</text>
-        <image class="redMark" src="../asset/png/game_start.png"/>
+        <image class="redMark" src="/asset/png/game_start.png"/>
       </view>
       <view class="shareButton" @tap.stop="share">
-        <image class="redMark" src="../asset/png/game_share.png"/>
+        <image class="redMark" src="/asset/png/game_share.png"/>
         <text >分享</text>
       </view>
     </view>
@@ -407,7 +407,7 @@
         let xyfb = this.xyfb
         xyfb.stop()
         wx.reLaunch({
-          url: 'index'
+          url: '/pages/index'
         })
       },
 
