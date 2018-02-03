@@ -557,8 +557,11 @@
     }
 
     gameOver(){
+      yield this.refreshDip()
       let xyfb = this.xyfb
-      xyfb.stop()
+      setTimeout(()=>{
+                xyfb.stop()
+      },200)
       if(this.money!=0){
         this.modalVisible = true
 //        wx.showModal({g
