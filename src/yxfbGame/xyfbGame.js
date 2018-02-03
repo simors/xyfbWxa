@@ -270,7 +270,7 @@ function xyfbGame(opts) {
     // hasred = this.hasred = false
     // animationR = this.animationR = 0
     clearInterval(loadingClock);
-    console.log('loadingClock========>',loadingClock)
+    // console.log('loadingClock========>',loadingClock)
   }
   //清除定时器
   game.clear = ()=>{
@@ -285,7 +285,7 @@ function xyfbGame(opts) {
     hasred = this.hasred = false
     animationR = this.animationR = 0
     loadingClock = setInterval(refresh, 50)
-    console.log('loadingClock========>',loadingClock)
+    // console.log('loadingClock========>',loadingClock)
   }
   //修改选中盒子
   game.changeWalked = (result)=>{

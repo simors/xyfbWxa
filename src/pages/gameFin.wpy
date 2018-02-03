@@ -301,6 +301,13 @@
     font-size: 34rpx;
   }
 
+  .showRemainDip{
+    margin-top: 5rpx;
+    font-family: PingFangSC-Semibold;
+    font-size: 24rpx;
+    color: #FDE808;
+  }
+
 </style>
 <template>
   <view class="container gameBody">
@@ -343,16 +350,26 @@
         <image class="redMark" src="/asset/png/game_home.png"/>
         <text class="shareText">首页</text>
       </button>
-      <view class="redButtonView"  @touchstart="start" @touchend="ok" >
-        <button class="redButton" >
-          <text class="redStart">开始</text>
-          <image class="redMark" src="/asset/png/game_start.png"/>
-        </button>
+      <view class="redButtonView"   >
+        <block wx:if="{{luckyDip.remain<=0 || remainDip<=0}}">
+          <button  class="redButton" @tap.stop="home">
+            <text class="redStart">发一个</text>
+          </button>
+        </block>
+        <block  wx:elif="{{remainDip>0&&luckyDip.remain>0}}">
+          <button class="redButton" @touchstart="start" @touchend="ok">
+            <text class="redStart">开始</text>
+            <image class="redMark" src="/asset/png/game_start.png"/>
+          </button>
+        </block>
       </view>
       <button class="shareButton" open-type="share">
         <image class="redMark" src="/asset/png/game_share.png"/>
         <text class="shareText">分享</text>
       </button>
+    </view>
+    <view class="showRemainDip">
+      {{'您还剩下'+remainDip+'次机会'}}
     </view>
   </view>
 </template>
@@ -383,8 +400,8 @@
       count: -1,
       walked: 0,
       isEnd: false,
-      countStart: 3,
-      countEnd: 3,
+      countStart: 5,
+      countEnd: 5,
       wxCanvas: null,
       computeBoxTimer: null,
       renderBoxTimer: null,
@@ -396,7 +413,8 @@
       luckyDip: null,
       rolling: false,
       modalVisible: false,
-      innerAudioContext: null
+      innerAudioContext: null,
+      remainDip: 0
     }
 
 
@@ -405,8 +423,8 @@
         if(!this.rolling){
           this.rolling = true
           try {
-            this.countStart = 3
-            this.countEnd = 3
+            this.countStart = 5
+            this.countEnd = 5
             this.isEnd = false
             let enable = await fubao.enableDrawLottery({luckyDipId: this.luckyDip.id})
 //            let enable = true
@@ -522,7 +540,7 @@
           this.computeBoxTimer = setTimeout(() => {
             this.computeBox()
             this.$apply()
-          }, 200)
+          }, 100)
         } else {
           this.countStart = this.countStart - 1
           this.computeBoxTimer = setTimeout(() => {
@@ -563,6 +581,7 @@
 
     async gameOver(){
       this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: this.luckyDip.id})
+      this.remainDip = await fubao.getUserRemainParticipateNum({luckyDipId:this.luckyDip.id})
       let xyfb = this.xyfb
       xyfb.changeLuckyDip(this.luckyDip)
       setTimeout(()=>{
@@ -572,7 +591,7 @@
         this.playAudio(gameAudio.recvFubao)
         this.modalVisible = true
 //        wx.showModal({g
-        console.log('this.modalVisible====>',this.modalVisible)
+//        console.log('this.modalVisible====>',this.modalVisible)
         this.$apply()
       }else{
         this.playAudio(gameAudio.recvFu)
@@ -637,6 +656,11 @@
       this.$apply()
     }
 
+    async getRemainDip(){
+      let remainDip = await fubao.getUserRemainParticipateNum({luckyDipId:this.luckyDip.id})
+      this.remainDip = remainDip
+    }
+
     async onLoad(option) {
       Tips.loading('正在登录')
 //      await this.$parent.getUserInfo()
@@ -656,9 +680,10 @@
 //            nickname: "绿蚁网络科技－杨阳"
 //          }
 //        }
+        await this.getRemainDip()
         this.luckyDip.amount = this.luckyDip.amount.toFixed(2)
         this.luckyDip.balance = this.luckyDip.balance.toFixed(2)
-        console.log('luckyDip=====>',this.luckyDip)
+//        console.log('luckyDip=====>',this.luckyDip)
         Tips.loaded()
       }
       var context = this.ctx = wx.createCanvasContext('first');
