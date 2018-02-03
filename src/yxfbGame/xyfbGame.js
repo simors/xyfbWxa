@@ -233,11 +233,12 @@ function xyfbGame(opts) {
         }
 
       }
-      ctx.save()
-      ctx.arc(item.x+item.w/2, item.y+item.h/2, animationR, 0, 2*Math.PI)
-      ctx.clip()
-      ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x + 10, item.y + 10, item.w - 20, item.h - 20)
-      ctx.restore()
+      // ctx.save()
+      // ctx.arc(item.x+item.w/2, item.y+item.h/2, animationR, 0, 2*Math.PI)
+      // ctx.clip()
+      // ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x + 10, item.y + 10, item.w - 20, item.h - 20)
+      ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x+(rectLine-animationR)/2+8*animationR/rectLine, item.y+(rectLine-animationR)/2+10*animationR/rectLine, animationR*0.8, 0.8*animationR)
+      // ctx.restore()
     }
   }
 
