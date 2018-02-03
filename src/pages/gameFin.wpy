@@ -364,6 +364,7 @@
   import Tips from '../utils/Tips'
   import * as errno from '../utils/errno'
   import fubao from '../cloud/fubao'
+  const gameAudio = require('../yxfbGame/audios')
 
   export default class GameFin extends wepy.page {
     config = {
@@ -395,6 +396,7 @@
       luckyDip: null,
       rolling: false,
       modalVisible: false,
+      innerAudioContext: null
     }
 
 
@@ -519,11 +521,13 @@
         if (this.countStart < 0) {
           this.computeBoxTimer = setTimeout(() => {
             this.computeBox()
+            this.$apply()
           }, 200)
         } else {
           this.countStart = this.countStart - 1
           this.computeBoxTimer = setTimeout(() => {
             this.computeBox()
+            this.$apply()
           }, 500)
         }
       } else {
@@ -545,6 +549,7 @@
           this.countEnd = this.countEnd - 1
           this.computeBoxTimer = setTimeout(() => {
             this.computeBox()
+            this.$apply()
           },500)
         }
       }
@@ -563,14 +568,21 @@
                 xyfb.stop()
       },200)
       if(this.money!=0){
+        this.playAudio(gameAudio.recvFubao)
         this.modalVisible = true
 //        wx.showModal({g
         console.log('this.modalVisible====>',this.modalVisible)
         this.$apply()
       }else{
-        Tips.toast('没有抢到福包！')
-          this.rolling = false
+        this.playAudio(gameAudio.recvFu)
+        Tips.toast('送您一个福！')
+        this.rolling = false
       }
+    }
+
+    playAudio(audio) {
+      this.innerAudioContext.src = audio
+      this.innerAudioContext.play()
     }
 
     async refreshDip(){
@@ -659,6 +671,15 @@
         success: ()=>{
           this.gameOver()
         }
+      })
+      this.innerAudioContext = wx.createInnerAudioContext()
+      this.innerAudioContext.autoplay = false
+      this.innerAudioContext.onPlay(() => {
+//        console.log('开始播放')
+      })
+      this.innerAudioContext.onError((res) => {
+        console.log(res.errMsg)
+        console.log(res.errCode)
       })
       this.$apply()
     }
