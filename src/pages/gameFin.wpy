@@ -572,7 +572,7 @@
         this.$apply()
       }else{
         this.playAudio(gameAudio.recvFu)
-        Tips.toast('没有抢到福包！')
+        Tips.toast('送您一个福！')
         this.rolling = false
       }
     }
