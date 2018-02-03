@@ -561,9 +561,10 @@
       return Tips.share(title, url, title);
     }
 
-    gameOver(){
-      yield this.refreshDip()
+    async gameOver(){
+      this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: this.luckyDip.id})
       let xyfb = this.xyfb
+      xyfb.changeLuckyDip(this.luckyDip)
       setTimeout(()=>{
                 xyfb.stop()
       },200)
@@ -587,9 +588,7 @@
 
     async refreshDip(){
       if(this.luckyDip){
-        this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: this.luckyDip.id})
-        let xyfb = this.xyfb
-        xyfb.changeLuckyDip(this.luckyDip)
+
       }
     }
 
