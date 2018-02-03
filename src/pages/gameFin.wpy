@@ -307,8 +307,8 @@
     <view class="gameContainer">
       <view class="gameInfo">
         <view class="ownerInfo">
-          <image class="userinfo-avatar" src="{{userInfo.avatar}}"/>
-          <text class="userInfoRedNum">{{userInfo.nickname}}发了{{luckyDip.count}}个福包</text>
+          <image class="userinfo-avatar" src="{{luckyDip.user.avatar}}"/>
+          <text class="userInfoRedNum">{{luckyDip.user.nickname}}发了{{luckyDip.count}}个福包</text>
         </view>
         <view class="ownerInfo">
           <image class="userinfo-avatar" src="/asset/png/game_money_mark.png"/>
@@ -565,7 +565,7 @@
         console.log('this.modalVisible====>',this.modalVisible)
         this.$apply()
       }else{
-        Tips.toast('没有抢到福包,请再接再厉！')
+        Tips.toast('没有抢到福包！')
           this.rolling = false
       }
     }
