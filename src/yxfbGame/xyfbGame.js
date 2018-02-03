@@ -145,8 +145,8 @@ function xyfbGame(opts) {
       ctx.setFontSize(17*ratio)
       ctx.setFillStyle('#EBB52B')
       ctx.setTextAlign('center')
-      ctx.fillText('按住【开始】按钮', rectLine*2, rectLine * 1.5)
-      ctx.fillText('开始找福包吧', rectLine*2, rectLine * 2)
+      ctx.fillText('长按【开始】并释放', rectLine*2, rectLine * 1.5)
+      ctx.fillText('找寻福包吧', rectLine*2, rectLine * 2)
       ctx.setFontSize(15*ratio)
       ctx.setFillStyle('#EBB52B')
       ctx.fillText('剩余金额： ¥'+luckyDip.balance, rectLine*2, rectLine * 3)
@@ -224,7 +224,7 @@ function xyfbGame(opts) {
   function drawAnimation(item) {
     if(isEnd){
       if(animationR<item.w){
-        animationR = animationR+4
+        animationR = animationR+8
 
       }else{
         // clearInterval(loadingClock)
@@ -284,7 +284,7 @@ function xyfbGame(opts) {
     isEnd = this.isEnd = false
     hasred = this.hasred = false
     animationR = this.animationR = 0
-    loadingClock = setInterval(refresh, 50)
+    loadingClock = setInterval(refresh, 100)
     // console.log('loadingClock========>',loadingClock)
   }
   //修改选中盒子

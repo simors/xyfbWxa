@@ -350,7 +350,7 @@
         <image class="redMark" src="/asset/png/game_home.png"/>
         <text class="shareText">首页</text>
       </button>
-      <view class="redButtonView"   >
+      <view class="redButtonView" >
         <block wx:if="{{luckyDip.remain<=0 || remainDip<=0}}">
           <button  class="redButton" @tap.stop="home">
             <text class="redStart">发一个</text>
