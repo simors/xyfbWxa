@@ -371,6 +371,8 @@
     <view class="showRemainDip">
       {{'您还剩下'+remainDip+'次机会'}}
     </view>
+
+    <authModel/>
   </view>
 </template>
 
@@ -382,13 +384,16 @@
   import * as errno from '../utils/errno'
   import fubao from '../cloud/fubao'
   const gameAudio = require('../yxfbGame/audios')
+  import AuthModel from '../components/authModel'
 
   export default class GameFin extends wepy.page {
     config = {
       navigationBarTitleText: '幸运福包',
       enablePullDownRefresh: false
     }
-    components = {}
+    components = {
+      authModel: AuthModel
+    }
 
     data = {
       userInfo: {
@@ -410,6 +415,7 @@
       hasred: false,
       socketOpen: false,
       money: 0,
+      luckyDipId: null,
       luckyDip: null,
       rolling: false,
       modalVisible: false,
@@ -417,9 +423,44 @@
       remainDip: 0
     }
 
+    events = {
+      'userAuth': async () => {
+        Tips.loading('正在登录')
+        this.userInfo = await this.$parent.getUserInfo()
+        Tips.loaded()
+        this.registSocket()
+        if (this.luckyDipId) {
+          Tips.loading()
+          this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: this.luckyDipId})
+          await this.getRemainDip()
+          this.luckyDip.amount = this.luckyDip.amount.toFixed(2)
+          this.luckyDip.balance = this.luckyDip.balance.toFixed(2)
+          Tips.loaded()
+        }
+        var context = this.ctx = wx.createCanvasContext('first');
+        let xyfb = this.xyfb = new xyfbGame({
+          cxt: this.ctx,
+          id: 'first',
+          balance: 100.5,
+          luckyDip: this.luckyDip,
+          success: ()=>{
+            this.gameOver()
+          }
+        })
+        this.$apply()
+      }
+    }
 
     methods = {
       async start(){
+        let currentUser = wepy.$instance.globalData.userInfo
+        if (!currentUser) {
+          Tips.error('请授权登录')
+          setTimeout(() => {
+            this.$invoke('authModel', 'toggleDialog')
+          }, 500)
+          return
+        }
         if(!this.rolling){
           this.rolling = true
           try {
@@ -427,7 +468,6 @@
             this.countEnd = 5
             this.isEnd = false
             let enable = await fubao.enableDrawLottery({luckyDipId: this.luckyDip.id})
-//            let enable = true
             if (enable) {
               if (this.socketOpen) {
                 this.sendDrawLotteryReq()
@@ -611,8 +651,11 @@
       }
     }
 
-    async onShow() {
-      this.userInfo = await this.$parent.getUserInfo()
+    registSocket() {
+      if (!this.userInfo) {
+        return
+      }
+      console.log('userInfo', this.userInfo)
       let userId = this.userInfo.id
       wx.connectSocket({
         url: WSS_DOMAIN + 'operation/' + userId,
@@ -653,7 +696,6 @@
         this.socketOpen = false
         console.log('WebSocket 已关闭！')
       })
-      this.$apply()
     }
 
     async getRemainDip(){
@@ -662,30 +704,36 @@
     }
 
     async onLoad(option) {
+      this.luckyDipId = option.luckyDipId
+
+      this.innerAudioContext = wx.createInnerAudioContext()
+      this.innerAudioContext.autoplay = false
+      this.innerAudioContext.onPlay(() => {
+//        console.log('开始播放')
+      })
+      this.innerAudioContext.onError((res) => {
+        console.log(res.errMsg)
+        console.log(res.errCode)
+      })
       Tips.loading('正在登录')
-//      await this.$parent.getUserInfo()
+      this.userInfo = await this.$parent.getUserInfo()
       Tips.loaded()
+      if (!this.userInfo) {
+        setTimeout(() => {
+          this.$invoke('authModel', 'toggleDialog')
+        }, 500)
+        this.$apply()
+        return
+      }
       if (option.luckyDipId) {
         Tips.loading()
         this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: option.luckyDipId})
-//        this.luckyDip = {
-//          id: '5a7400b4fe88c2003c77f6b0',
-//          amount: 1.00,
-//          balance: 0.94,
-//          count: 100,
-//          remain: 96,
-//          user: {
-//            id: '5a60c5ae0b6160004381db7f',
-//            avatar: "https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIOKKW6LBI4TUIHNRtjKHY5J4D7BPdfn4zneZUpfOzwL4RiaBujDlJicQdj9J4GJUe48zhWBQmAAsDg/0",
-//            nickname: "绿蚁网络科技－杨阳"
-//          }
-//        }
         await this.getRemainDip()
         this.luckyDip.amount = this.luckyDip.amount.toFixed(2)
         this.luckyDip.balance = this.luckyDip.balance.toFixed(2)
-//        console.log('luckyDip=====>',this.luckyDip)
         Tips.loaded()
       }
+      this.registSocket()
       var context = this.ctx = wx.createCanvasContext('first');
       let xyfb = this.xyfb = new xyfbGame({
         cxt: this.ctx,
@@ -695,15 +743,6 @@
         success: ()=>{
           this.gameOver()
         }
-      })
-      this.innerAudioContext = wx.createInnerAudioContext()
-      this.innerAudioContext.autoplay = false
-      this.innerAudioContext.onPlay(() => {
-//        console.log('开始播放')
-      })
-      this.innerAudioContext.onError((res) => {
-        console.log(res.errMsg)
-        console.log(res.errCode)
       })
       this.$apply()
     }

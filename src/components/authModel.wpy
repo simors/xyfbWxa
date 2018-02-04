@@ -63,7 +63,7 @@
       <view class="dialog-content-view">
         <text class="title-tip-text">亲！需要您进行用户授权才能够正常使用小程序哦！</text>
         <text class="sub-tip-text">微信只允许获取您的微信头像、昵称等公开信息，可放心授权</text>
-        <button open-type="getUserInfo" type="primary" style="width: 450rpx; margin-top: 40rpx" bindgetuserinfo="userLogin">授权</button>
+        <button open-type="getUserInfo" type="primary" style="width: 450rpx; margin-top: 40rpx" bindgetuserinfo="userAuth">授权</button>
       </view>
     </view>
   </view>
@@ -104,10 +104,8 @@
             }).exec()
       },
 
-      async userLogin() {
-        Tips.loading('正在登录')
-        await this.$root.$parent.getUserInfo()
-        Tips.loaded()
+      userAuth() {
+        this.$emit('userAuth')
         this.hideDialog()
       }
     }
