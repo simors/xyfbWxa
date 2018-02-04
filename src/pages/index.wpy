@@ -154,6 +154,8 @@
         <text class="tool-btn-text">联系客服</text>
       </button>
     </view>
+
+    <authModel/>
   </view>
 </template>
 
@@ -164,6 +166,7 @@
   import Pingpp from '../utils/pingpp'
   import pay from '../cloud/pay'
   import fubao from '../cloud/fubao'
+  import AuthModel from '../components/authModel'
 
   export default class Index extends wepy.page {
     config = {
@@ -171,7 +174,8 @@
       enablePullDownRefresh: false
     }
     components = {
-      pageFooter: PageFooter
+      pageFooter: PageFooter,
+      authModel: AuthModel
     }
 
     data = {
@@ -232,6 +236,9 @@
         if (!currentUser) {
           Tips.error('请授权登录')
           this.payDisabled = false
+          setTimeout(() => {
+            this.$invoke('authModel', 'toggleDialog')
+          }, 500)
           return
         }
         if (!this.amount) {
@@ -308,6 +315,10 @@
       Tips.loading('正在登录')
       await this.$parent.getUserInfo()
       Tips.loaded()
+    }
+
+    onShow() {
+      this.$invoke('authModel', 'hideDialog')
     }
 
     onShareAppMessage () {
