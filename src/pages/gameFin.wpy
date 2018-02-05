@@ -391,6 +391,7 @@
       navigationBarTitleText: '幸运福包',
       enablePullDownRefresh: false
     }
+
     components = {
       authModel: AuthModel
     }

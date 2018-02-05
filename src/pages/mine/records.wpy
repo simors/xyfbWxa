@@ -152,6 +152,8 @@
       </view>
     </view>
     <view style="height: 200rpx"/>
+
+    <authModel/>
   </view>
 </template>
 
@@ -161,6 +163,7 @@
   import FriendItem from '../../components/friendItem'
   import SndRedEnvelopItem from '../../components/sndRedEnvelopItem'
   import fubao from '../../cloud/fubao'
+  import AuthModel from '../../components/authModel'
 
   export default class Records extends wepy.page {
     config = {
@@ -170,7 +173,8 @@
 
     components = {
       friendItem: FriendItem,
-      sndRedEnvelopItem: SndRedEnvelopItem
+      sndRedEnvelopItem: SndRedEnvelopItem,
+      authModel: AuthModel
     }
 
     data = {
@@ -215,6 +219,13 @@
     }
 
     events = {
+      'userAuth': async () => {
+        Tips.loading('正在登录')
+        this.userInfo = await this.$parent.getUserInfo()
+        Tips.loaded()
+        await this.loadRecvedFubaos()
+        this.$apply()
+      }
     }
 
     async loadRecvedFubaos() {
@@ -272,6 +283,14 @@
     }
 
     async onLoad() {
+      let userInfo = wepy.$instance.globalData.userInfo
+      if (!userInfo) {
+        setTimeout(() => {
+          this.$invoke('authModel', 'toggleDialog')
+        }, 500)
+        this.$apply()
+        return
+      }
       await this.loadRecvedFubaos()
       this.$apply()
     }
