@@ -761,17 +761,6 @@
           this.gameOver()
         }
       })
-      this.innerAudioContext = wx.createInnerAudioContext()
-      this.innerAudioContext.autoplay = false
-      this.innerAudioContext.onPlay(() => {
-//        console.log('开始播放')
-      })
-      this.innerAudioContext.onError((res) => {
-        console.log(res.errMsg)
-        console.log(res.errCode)
-      })
-//      xyfb.start()
-
       this.$apply()
     }
 
