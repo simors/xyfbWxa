@@ -448,6 +448,7 @@
           id: 'first',
           balance: 100.5,
           luckyDip: this.luckyDip,
+          Tips:Tips,
           success: ()=> {
             this.gameOver()
           }
@@ -524,7 +525,7 @@
         this.modalVisible = false
         this.rolling = false
         let xyfb = this.xyfb
-        xyfb.clear()
+        this.refreshGame()
         this.$apply()
       },
 
@@ -654,10 +655,20 @@
         this.$apply()
       } else {
         this.playAudio(gameAudio.recvFu)
-        Tips.toast('送您一个福！')
-        this.rolling = false
-        this.isStart = false
+        Tips.toast('送您一个福！',()=>{
+          this.rolling = false
+          this.isStart = false
+          this.refreshGame()
+        })
+
+
       }
+    }
+
+    refreshGame(){
+      Tips.loading('加载中...')
+      this.xyfb.clear()
+      setTimeout(()=>{Tips.loaded()},600)
     }
 
     playAudio(audio) {
@@ -754,6 +765,7 @@
         id: 'first',
         balance: 100.5,
         luckyDip: this.luckyDip,
+        Tips:Tips,
         success: ()=> {
           this.gameOver()
         }
