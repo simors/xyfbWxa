@@ -3,6 +3,7 @@
  */
 const xyfbImages = require('./images.js');
 const emitter = require('../utils/emitter.js');
+const gameAudio = require('./audios')
 
 //屏幕单位配置
 var clientWidth = wx.getSystemInfoSync()
@@ -127,6 +128,21 @@ function xyfbGame(opts) {
     src: ''
   }
   let gameSpeed = this.gameSpeed = 0
+  
+  let innerAudioContext = this.innerAudioContext = wx.createInnerAudioContext()
+  innerAudioContext.autoplay = false
+  innerAudioContext.onPlay(() => {
+    // console.log('开始播放')
+  })
+  innerAudioContext.onError((res) => {
+    console.log(res.errMsg)
+    console.log(res.errCode)
+  })
+  
+  function playAudio(audio) {
+    innerAudioContext.src = audio
+    setTimeout(() => innerAudioContext.play(), 10)
+  }
 
   function randomBox() {
     for (let i = 0; i < config.rectList.length; i++) {
@@ -160,6 +176,7 @@ function xyfbGame(opts) {
       let isMove = count % (gameSpeed / config["refreshSpeed"])
       if (isMove == 0) {
         walkedBox.step = walkedBox.step + 1
+        setTimeout(() => playAudio(gameAudio.walk), 1)
       }
     }
   }
