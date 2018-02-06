@@ -396,7 +396,11 @@
       luckyDip: null,
       rolling: false,
       modalVisible: false,
-      innerAudioContext: null
+      innerAudioContext: null,
+      highSpeed: 100,
+      middleSpeed: 200,
+      lowSpeed: 500,
+      speed: 0 ,
     }
 
 
@@ -431,8 +435,9 @@
               let xyfb = this.xyfb
 //              xyfb.changeEnd(false,false)
 //              xyfb.stop()
+              console.log('i m start =======> ')
+              this.go()
               xyfb.start()
-              this.computeBox()
             }
           } catch (e) {
             this.rolling = false
@@ -471,6 +476,7 @@
 
       ok(){
         this.isEnd = true
+        this.speedDown()
       },
 
       home(){
@@ -493,10 +499,51 @@
       },
 
       stop(){
-        let xyfb = this.xyfb
-        xyfb.stop()
+        this.isEnd = true
+        this.speedDown()
       }
 
+    }
+
+    speedDown(){
+      if(this.isEnd){
+        if(this.speed == this. highSpeed){
+          this.speed = this.middleSpeed
+          let xyfb = this.xyfb
+          xyfb.changeSpeed(this.speed)
+          setTimeout(()=>{this.speedDown()},2000)
+        }else if(this.speed == this.middleSpeed){
+          this.speed = this.lowSpeed
+          let xyfb = this.xyfb
+          xyfb.changeSpeed(this.speed)
+          setTimeout(()=>{this.speedDown()},2000)
+        }else{
+          this.speed = 0
+          let xyfb = this.xyfb
+          setTimeout(()=>{
+            xyfb.changeEnd(this.isEnd,this.money>0)
+            xyfb.changeSpeed(this.speed)
+          },2000)
+        }
+      }
+    }
+
+    go(){
+        if(this.speed == 0){
+          this.speed = this.lowSpeed
+          let xyfb = this.xyfb
+          xyfb.changeSpeed(this.speed)
+          setTimeout(()=>{this.go()},2000)
+        }else if(this.speed == this.lowSpeed){
+          this.speed = this.middleSpeed
+          let xyfb = this.xyfb
+          xyfb.changeSpeed(this.speed)
+          setTimeout(()=>{this.go()},2000)
+        }else{
+          this.speed = this.highSpeed
+          let xyfb = this.xyfb
+          xyfb.changeSpeed(this.speed)
+        }
     }
 
     sendDrawLotteryReq() {
@@ -508,51 +555,6 @@
           luckyDipId: this.luckyDip.id
         })
       })
-    }
-
-    //计算格子
-    computeBox() {
-      if (!this.isEnd) {
-        this.count = this.count + 1
-        let walkedBox = this.count % this.rectListLength
-        this.walked = walkedBox
-        let xyfb = this.xyfb
-        xyfb.changeWalked(this.walked)
-        if (this.countStart < 0) {
-          this.computeBoxTimer = setTimeout(() => {
-            this.computeBox()
-            this.$apply()
-          }, 200)
-        } else {
-          this.countStart = this.countStart - 1
-          this.computeBoxTimer = setTimeout(() => {
-            this.computeBox()
-            this.$apply()
-          }, 500)
-        }
-      } else {
-        if (this.countEnd < 0) {
-          let xyfb = this.xyfb
-          if(this.money!=0){
-            this.hasred = true
-          }else{
-            this.hasred = false
-          }
-          clearTimeout(this.computeBoxTimer)
-          xyfb.changeEnd(this.isEnd, this.hasred)
-        } else {
-          this.count = this.count + 1
-          let walkedBox = this.count % this.rectListLength
-          this.walked = walkedBox
-          let xyfb = this.xyfb
-          xyfb.changeWalked(this.walked)
-          this.countEnd = this.countEnd - 1
-          this.computeBoxTimer = setTimeout(() => {
-            this.computeBox()
-            this.$apply()
-          },500)
-        }
-      }
     }
 
     onShareAppMessage () {
@@ -680,6 +682,7 @@
         console.log(res.errMsg)
         console.log(res.errCode)
       })
+//      xyfb.start()
       this.$apply()
     }
 

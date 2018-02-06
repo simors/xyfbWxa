@@ -14,7 +14,7 @@ var rectLine = 80*ratio
 //游戏配置
 var config = {
   "gameStartSpeed": 400,
-  "gameSpeed": 100,  //游戏速度
+  "refreshSpeed": 100,
   "rectList": [
     {
       x: 0,
@@ -113,10 +113,20 @@ function xyfbGame(opts) {
   let hasred = this.hasred = opts.hasred
   let balance = this.balance = opts.balance
   let luckyDip = this.luckyDip = opts.luckyDip
-  let count = 1
+  let count = 0
   let animationR = this.animationR = 0
   let loadingClock = this.loadingClock = undefined
   let animationClock = this.animationClock = undefined
+  let walkedBox = {
+      background: xyfbImages['cellLight'].src,
+      w: rectLine,
+      h: rectLine,
+      hasred: xyfbImages['redEnvelopes'].src,
+      nored: xyfbImages['game_bless'].src,
+      step: 0,
+      src: ''
+  }
+  let gameSpeed = this.gameSpeed = 0
   for(let i = 0;i<config.rectList.length;i++){
     let roundNum = Math.round(Math.random()*11)
     config.rectList[i].src = xyfbImages['game_item_list'][roundNum]
@@ -125,11 +135,49 @@ function xyfbGame(opts) {
   //等待动画刷新事件
   var refresh = ()=> {
     drawText()
+    drawRedNum();
+    move()
     drawBoxList();
-    drawRedNum()
+    // drawWalkBox();
     // drawIsEnd()
     // console.log('here is clock')
     ctx.draw()
+    // if(gameSpeed==0) {
+    //   clearInterval(loadingClock)
+    // }
+    count++
+  }
+
+  refresh()
+  //精灵移动
+  function move(){
+    if(gameSpeed!=0){
+      let isMove = count%(gameSpeed/config["refreshSpeed"])
+
+      if(isMove==0){
+        let situation = walkedBox.step%config["rectList"].length
+        console.log('walkedBox==========>',walkedBox)
+        console.log('situation==========>',situation)
+        // walkedBox.src = config["rectList"][situation].src
+        walkedBox.x = config["rectList"][situation].x
+        walkedBox.y = config["rectList"][situation].y
+        walkedBox.step = walkedBox.step + 1
+
+      }
+    }
+
+  }
+
+  //画精灵
+  function drawWalkBox(){
+    let display = walkedBox.step%config['rectList'].length
+    console.log('display=========>',display)
+    ctx.drawImage(walkedBox.background, walkedBox.x, walkedBox.y, walkedBox.w, walkedBox.h)
+    if(gameSpeed==0&&isEnd){
+      drawAnimation(walkedBox)
+    }else{
+      // ctx.drawImage(config['rectList'][walkedBox.step%config['rectList'].length], walkedBox.x, walkedBox.y, walkedBox.w, walkedBox.h)
+    }
   }
 
   //文字
@@ -222,23 +270,23 @@ function xyfbGame(opts) {
 
   //画动画
   function drawAnimation(item) {
-    if(isEnd){
+
+    if(isEnd&&gameSpeed==0){
       if(animationR<item.w){
         animationR = animationR+4
-
       }else{
-        // clearInterval(loadingClock)
+        console.log('clearloadingClock===>',loadingClock)
+        clearInterval(loadingClock)
         if(opts&&opts.success){
           opts.success()
         }
-
       }
-      // ctx.save()
-      // ctx.arc(item.x+item.w/2, item.y+item.h/2, animationR, 0, 2*Math.PI)
-      // ctx.clip()
-      // ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x + 10, item.y + 10, item.w - 20, item.h - 20)
-      ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x+(rectLine-animationR)/2+8*animationR/rectLine, item.y+(rectLine-animationR)/2+10*animationR/rectLine, animationR*0.8, 0.8*animationR)
-      // ctx.restore()
+      ctx.save()
+      ctx.arc(item.x+item.w/2, item.y+item.h/2, animationR, 0, 2*Math.PI)
+      ctx.clip()
+      ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x + 10, item.y + 10, item.w - 20, item.h - 20)
+      // ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x+(rectLine-animationR)/2+8*animationR/rectLine, item.y+(rectLine-animationR)/2+10*animationR/rectLine, animationR*0.8, 0.8*animationR)
+      ctx.restore()
     }
   }
 
@@ -247,23 +295,20 @@ function xyfbGame(opts) {
     let rectList = config['rectList']
     for (let i = 0; i < rectList.length; i++) {
       let item = rectList[i]
-      if (isEnd == true && i == walked) {
+      if(i==walkedBox.step%rectList.length){
         ctx.drawImage(xyfbImages['cellLight'].src, item.x, item.y, item.w, item.h)
-        // ctx.drawImage(hasred ? xyfbImages["redEnvelopes"].src : xyfbImages["game_bless"].src, item.x - 1, item.y - 1, item.w - 3, item.h - 3)
-        // drawLight(item)
-        drawAnimation(item)
-      } else if (i == walked) {
-        ctx.drawImage(xyfbImages['cellLight'].src, item.x, item.y, item.w, item.h)
-        ctx.drawImage(item.src, item.x, item.y, item.w, item.h)
-
-      } else {
+        if(isEnd&&gameSpeed==0){
+          drawAnimation(item)
+        }else{
+          ctx.drawImage(item.src, item.x, item.y, item.w, item.h)
+        }
+      }else{
         ctx.drawImage(xyfbImages['bg'].src, item.x, item.y, item.w, item.h)
-         // drawAnimation(item)
         ctx.drawImage(item.src, item.x, item.y, item.w, item.h)
       }
     }
-  }
-  refresh()
+    }
+  // refresh()
   var game = this.game = {}
 
   game.stop = ()=>{
@@ -285,8 +330,8 @@ function xyfbGame(opts) {
     isEnd = this.isEnd = false
     hasred = this.hasred = false
     animationR = this.animationR = 0
-    loadingClock = setInterval(refresh, 50)
-    console.log('loadingClock========>',loadingClock)
+    loadingClock = setInterval(refresh, config["refreshSpeed"])
+    // console.log('loadingClock========>',loadingClock)
   }
   //修改选中盒子
   game.changeWalked = (result)=>{
@@ -299,7 +344,11 @@ function xyfbGame(opts) {
     }
     isEnd = this.isEnd = item
     hasred = this.hasred = item2
+  }
 
+  game.changeSpeed = (speed) => {
+    console.log('speed===>',speed)
+    gameSpeed = speed
   }
 
   game.changeLuckyDip = (item)=>{
@@ -333,6 +382,10 @@ xyfbGame.prototype.clear = function () {
 
 xyfbGame.prototype.start = function () {
   this.game.start()
+}
+
+xyfbGame.prototype.changeSpeed = function (item) {
+  this.game.changeSpeed(item)
 }
 
 emitter.setup(xyfbGame.prototype);
