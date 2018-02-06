@@ -117,6 +117,8 @@
       </view>
     </view>
     <view style="height: 200rpx"/>
+
+    <authModel/>
   </view>
 </template>
 
@@ -126,14 +128,17 @@
   import BalanceRecord from '../../components/balanceRecord'
   import pay from '../../cloud/pay'
   import * as errno from '../../utils/errno'
+  import AuthModel from '../../components/authModel'
 
   export default class Balance extends wepy.page {
     config = {
       navigationBarTitleText: '我的余额',
       enablePullDownRefresh: false
     }
+
     components = {
       balanceRecord: BalanceRecord,
+      authModel: AuthModel
     }
 
     data = {
@@ -185,6 +190,23 @@
     }
 
     events = {
+      'userAuth': async () => {
+        Tips.loading('正在登录')
+        this.userInfo = await this.$parent.getUserInfo()
+        Tips.loaded()
+        Tips.loading()
+        this.wallet = await pay.fetchWallet()
+        this.deals = await pay.fetchUserDealRecords({limit: this.limit})
+        let size = this.deals.length
+        if (size < this.limit) {
+          this.hasMore = false
+        }
+        if (size > 0) {
+          this.lastTime = this.deals[size-1].dealTime
+        }
+        Tips.loaded()
+        this.$apply()
+      }
     }
 
     async withdrawRequest() {
@@ -218,9 +240,17 @@
     }
 
     async onLoad() {
+      Tips.loading('正在登录')
       let userInfo = await this.$parent.getUserInfo()
+      Tips.loaded()
       if (userInfo) {
         this.userInfo = userInfo
+      } else {
+        setTimeout(() => {
+          this.$invoke('authModel', 'toggleDialog')
+        }, 500)
+        this.$apply()
+        return
       }
       Tips.loading()
       this.wallet = await pay.fetchWallet()

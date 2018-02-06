@@ -1,0 +1,118 @@
+<style lang="less">
+  @import "../styles/vars.less";
+
+  .auth-model-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+  }
+
+  .auth-dialog-show .auth-model-mask {
+    display: block;
+  }
+
+  .auth-dialog__container {
+    position: fixed;
+    bottom: 400rpx;
+    left: 75rpx;
+    width: 600rpx;
+    background: transparent;
+    transform: translateY(100%);
+    z-index: 11;
+  }
+
+  .auth-show-container {
+    display: block;
+  }
+
+  .auth-hidden-container {
+    display: none;
+  }
+
+  .auth-dialog-content-view {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    border-radius: 5px;
+    padding: 40rpx 40rpx;
+  }
+
+  .auth-title-tip-text {
+    font-size: 17px;
+    color: #000;
+  }
+
+  .sub-tip-text {
+    font-size: 14px;
+    color: #696668;
+    margin-top: 60rpx;
+  }
+</style>
+
+<template>
+  <view class="{{ showDialog ? 'auth-dialog-show' : '' }}">
+    <view class="auth-model-mask" @tap.stop="toggleDialog" />
+    <view animation="{{animationData}}" class="auth-dialog__container {{showDialog ? 'auth-show-container' : 'auth-hidden-container'}}">
+      <view class="auth-dialog-content-view">
+        <text class="auth-title-tip-text">亲！需要您进行用户授权才能够正常使用小程序哦！</text>
+        <text class="sub-tip-text">微信只允许获取您的微信头像、昵称等公开信息，可放心授权</text>
+        <button open-type="getUserInfo" type="primary" style="width: 450rpx; margin-top: 40rpx" bindgetuserinfo="userAuth">授权</button>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Tips from '../utils/Tips'
+
+  export default class AuthModel extends wepy.component {
+    props = {
+    }
+
+    data = {
+      showDialog: false,
+      animationData: {},
+    }
+
+    events = {
+    }
+
+    methods = {
+      toggleDialog() {
+        this.showDialog = !this.showDialog
+        let animation = wepy.createAnimation({
+          duration: 400,
+          timingFunction: 'ease'
+        })
+        this.animation = animation
+        wx.createSelectorQuery()
+            .select('.auth-dialog__container')
+            .boundingClientRect((rect) => {
+              this.showDialog
+                  ? animation.translateY().step()
+                  : animation.translateY(rect.height).step()
+              this.animationData = animation.export()
+              this.$apply()
+            }).exec()
+      },
+
+      userAuth() {
+        this.$emit('userAuth')
+        this.hideDialog()
+      }
+    }
+
+    hideDialog() {
+      this.showDialog = false
+      this.$apply()
+    }
+  }
+</script>

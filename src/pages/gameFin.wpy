@@ -301,6 +301,13 @@
     font-size: 34rpx;
   }
 
+  .showRemainDip{
+    margin-top: 5rpx;
+    font-family: PingFangSC-Semibold;
+    font-size: 24rpx;
+    color: #FDE808;
+  }
+
 </style>
 <template>
   <view class="container gameBody">
@@ -343,17 +350,29 @@
         <image class="redMark" src="/asset/png/game_home.png"/>
         <text class="shareText">首页</text>
       </button>
-      <view class="redButtonView"  @touchstart="start" @touchend="ok" >
-        <button class="redButton" >
-          <text class="redStart">开始</text>
-          <image class="redMark" src="/asset/png/game_start.png"/>
-        </button>
+      <view class="redButtonView" >
+        <block wx:if="{{luckyDip.remain<=0 || remainDip<=0}}">
+          <button  class="redButton" @tap.stop="home">
+            <text class="redStart">发一个</text>
+          </button>
+        </block>
+        <block  wx:elif="{{remainDip>0&&luckyDip.remain>0}}">
+          <button class="redButton" @touchstart="start" @touchend="ok">
+            <text class="redStart">开始</text>
+            <image class="redMark" src="/asset/png/game_start.png"/>
+          </button>
+        </block>
       </view>
       <button class="shareButton" open-type="share">
         <image class="redMark" src="/asset/png/game_share.png"/>
         <text class="shareText">分享</text>
       </button>
     </view>
+    <view class="showRemainDip">
+      {{'您还剩下'+remainDip+'次机会'}}
+    </view>
+
+    <authModel/>
   </view>
 </template>
 
@@ -365,13 +384,17 @@
   import * as errno from '../utils/errno'
   import fubao from '../cloud/fubao'
   const gameAudio = require('../yxfbGame/audios')
+  import AuthModel from '../components/authModel'
 
   export default class GameFin extends wepy.page {
     config = {
       navigationBarTitleText: '幸运福包',
       enablePullDownRefresh: false
     }
-    components = {}
+
+    components = {
+      authModel: AuthModel
+    }
 
     data = {
       userInfo: {
@@ -383,8 +406,8 @@
       count: -1,
       walked: 0,
       isEnd: false,
-      countStart: 3,
-      countEnd: 3,
+      countStart: 5,
+      countEnd: 5,
       wxCanvas: null,
       computeBoxTimer: null,
       renderBoxTimer: null,
@@ -393,6 +416,7 @@
       hasred: false,
       socketOpen: false,
       money: 0,
+      luckyDipId: null,
       luckyDip: null,
       rolling: false,
       modalVisible: false,
@@ -401,19 +425,55 @@
       middleSpeed: 200,
       lowSpeed: 500,
       speed: 0 ,
+      remainDip: 0,
+      isStart: false,
     }
 
+    events = {
+      'userAuth': async () => {
+        Tips.loading('正在登录')
+        this.userInfo = await this.$parent.getUserInfo()
+        Tips.loaded()
+        this.registSocket()
+        if (this.luckyDipId) {
+          Tips.loading()
+          this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: this.luckyDipId})
+          await this.getRemainDip()
+          this.luckyDip.amount = this.luckyDip.amount.toFixed(2)
+          this.luckyDip.balance = this.luckyDip.balance.toFixed(2)
+          Tips.loaded()
+        }
+        var context = this.ctx = wx.createCanvasContext('first');
+        let xyfb = this.xyfb = new xyfbGame({
+          cxt: this.ctx,
+          id: 'first',
+          balance: 100.5,
+          luckyDip: this.luckyDip,
+          success: ()=>{
+            this.gameOver()
+          }
+        })
+        this.$apply()
+      }
+    }
 
     methods = {
       async start(){
+        let currentUser = wepy.$instance.globalData.userInfo
+        if (!currentUser) {
+          Tips.error('请授权登录')
+          setTimeout(() => {
+            this.$invoke('authModel', 'toggleDialog')
+          }, 500)
+          return
+        }
         if(!this.rolling){
           this.rolling = true
           try {
-            this.countStart = 3
-            this.countEnd = 3
+            this.countStart = 5
+            this.countEnd = 5
             this.isEnd = false
             let enable = await fubao.enableDrawLottery({luckyDipId: this.luckyDip.id})
-//            let enable = true
             if (enable) {
               if (this.socketOpen) {
                 this.sendDrawLotteryReq()
@@ -435,9 +495,11 @@
               let xyfb = this.xyfb
 //              xyfb.changeEnd(false,false)
 //              xyfb.stop()
-              console.log('i m start =======> ')
+              this.speed = this.lowSpeed
+              xyfb.changeSpeed(this.speed)
               this.go()
               xyfb.start()
+              this.isStart = true
             }
           } catch (e) {
             this.rolling = false
@@ -506,44 +568,54 @@
     }
 
     speedDown(){
-      if(this.isEnd){
-        if(this.speed == this. highSpeed){
-          this.speed = this.middleSpeed
-          let xyfb = this.xyfb
-          xyfb.changeSpeed(this.speed)
-          setTimeout(()=>{this.speedDown()},2000)
-        }else if(this.speed == this.middleSpeed){
-          this.speed = this.lowSpeed
-          let xyfb = this.xyfb
-          xyfb.changeSpeed(this.speed)
-          setTimeout(()=>{this.speedDown()},2000)
-        }else{
-          this.speed = 0
-          let xyfb = this.xyfb
-          setTimeout(()=>{
-            xyfb.changeEnd(this.isEnd,this.money>0)
+      console.log('this.isStart==>',this.isStart)
+      if(this.isStart){
+        if(this.isEnd){
+          if(this.speed == this. highSpeed){
+            this.speed = this.middleSpeed
+            let xyfb = this.xyfb
             xyfb.changeSpeed(this.speed)
-          },2000)
+            setTimeout(()=>{this.speedDown()},2000)
+          }else if(this.speed == this.middleSpeed){
+            this.speed = this.lowSpeed
+            let xyfb = this.xyfb
+            xyfb.changeSpeed(this.speed)
+            setTimeout(()=>{this.speedDown()},2000)
+          }else{
+            console.log('i m speed down')
+            this.speed = 0
+            let xyfb = this.xyfb
+            setTimeout(()=>{
+              xyfb.changeEnd(this.isEnd,this.money>0)
+              xyfb.changeSpeed(this.speed)
+            },2000)
+          }
         }
+      }else{
+        setTimeout(()=>{this.speedDown()},2000)
       }
+
     }
 
     go(){
+      if(!this.isEnd){
+        console.log('i m gogogogo')
         if(this.speed == 0){
           this.speed = this.lowSpeed
           let xyfb = this.xyfb
           xyfb.changeSpeed(this.speed)
-          setTimeout(()=>{this.go()},2000)
+          setTimeout(()=>{this.go()},1500)
         }else if(this.speed == this.lowSpeed){
           this.speed = this.middleSpeed
           let xyfb = this.xyfb
           xyfb.changeSpeed(this.speed)
-          setTimeout(()=>{this.go()},2000)
+          setTimeout(()=>{this.go()},1500)
         }else{
           this.speed = this.highSpeed
           let xyfb = this.xyfb
           xyfb.changeSpeed(this.speed)
         }
+      }
     }
 
     sendDrawLotteryReq() {
@@ -556,7 +628,6 @@
         })
       })
     }
-
     onShareAppMessage () {
       const title = this.luckyDip.remark;
       const url = '/pages/gameFin?luckyDipId=' + this.luckyDip.id
@@ -565,6 +636,7 @@
 
     async gameOver(){
       this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: this.luckyDip.id})
+      this.remainDip = await fubao.getUserRemainParticipateNum({luckyDipId:this.luckyDip.id})
       let xyfb = this.xyfb
       xyfb.changeLuckyDip(this.luckyDip)
       setTimeout(()=>{
@@ -573,13 +645,15 @@
       if(this.money!=0){
         this.playAudio(gameAudio.recvFubao)
         this.modalVisible = true
+        this.isStart = false
 //        wx.showModal({g
-        console.log('this.modalVisible====>',this.modalVisible)
+//        console.log('this.modalVisible====>',this.modalVisible)
         this.$apply()
       }else{
         this.playAudio(gameAudio.recvFu)
         Tips.toast('送您一个福！')
         this.rolling = false
+        this.isStart = false
       }
     }
 
@@ -594,8 +668,11 @@
       }
     }
 
-    async onShow() {
-      this.userInfo = await this.$parent.getUserInfo()
+    registSocket() {
+      if (!this.userInfo) {
+        return
+      }
+      console.log('userInfo', this.userInfo)
       let userId = this.userInfo.id
       wx.connectSocket({
         url: WSS_DOMAIN + 'operation/' + userId,
@@ -636,33 +713,44 @@
         this.socketOpen = false
         console.log('WebSocket 已关闭！')
       })
-      this.$apply()
+    }
+
+    async getRemainDip(){
+      let remainDip = await fubao.getUserRemainParticipateNum({luckyDipId:this.luckyDip.id})
+      this.remainDip = remainDip
     }
 
     async onLoad(option) {
+      this.luckyDipId = option.luckyDipId
+
+      this.innerAudioContext = wx.createInnerAudioContext()
+      this.innerAudioContext.autoplay = false
+      this.innerAudioContext.onPlay(() => {
+//        console.log('开始播放')
+      })
+      this.innerAudioContext.onError((res) => {
+        console.log(res.errMsg)
+        console.log(res.errCode)
+      })
       Tips.loading('正在登录')
-//      await this.$parent.getUserInfo()
+      this.userInfo = await this.$parent.getUserInfo()
       Tips.loaded()
+      if (!this.userInfo) {
+        setTimeout(() => {
+          this.$invoke('authModel', 'toggleDialog')
+        }, 500)
+        this.$apply()
+        return
+      }
       if (option.luckyDipId) {
         Tips.loading()
         this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: option.luckyDipId})
-//        this.luckyDip = {
-//          id: '5a7400b4fe88c2003c77f6b0',
-//          amount: 1.00,
-//          balance: 0.94,
-//          count: 100,
-//          remain: 96,
-//          user: {
-//            id: '5a60c5ae0b6160004381db7f',
-//            avatar: "https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIOKKW6LBI4TUIHNRtjKHY5J4D7BPdfn4zneZUpfOzwL4RiaBujDlJicQdj9J4GJUe48zhWBQmAAsDg/0",
-//            nickname: "绿蚁网络科技－杨阳"
-//          }
-//        }
+        await this.getRemainDip()
         this.luckyDip.amount = this.luckyDip.amount.toFixed(2)
         this.luckyDip.balance = this.luckyDip.balance.toFixed(2)
-        console.log('luckyDip=====>',this.luckyDip)
         Tips.loaded()
       }
+      this.registSocket()
       var context = this.ctx = wx.createCanvasContext('first');
       let xyfb = this.xyfb = new xyfbGame({
         cxt: this.ctx,
@@ -683,6 +771,7 @@
         console.log(res.errCode)
       })
 //      xyfb.start()
+
       this.$apply()
     }
 
