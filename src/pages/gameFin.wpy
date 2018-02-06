@@ -324,7 +324,6 @@
       </view>
       <view class="gameBox">
         <canvas
-            @tap="test"
             class="canvasStyle"
             canvas-id="first"
             disable-scroll=true
@@ -424,13 +423,13 @@
       highSpeed: 100,
       middleSpeed: 200,
       lowSpeed: 500,
-      speed: 0 ,
+      speed: 0,
       remainDip: 0,
       isStart: false,
     }
 
     events = {
-      'userAuth': async () => {
+      'userAuth': async() => {
         Tips.loading('正在登录')
         this.userInfo = await this.$parent.getUserInfo()
         Tips.loaded()
@@ -449,7 +448,7 @@
           id: 'first',
           balance: 100.5,
           luckyDip: this.luckyDip,
-          success: ()=>{
+          success: ()=> {
             this.gameOver()
           }
         })
@@ -467,7 +466,7 @@
           }, 500)
           return
         }
-        if(!this.rolling){
+        if (!this.rolling) {
           this.rolling = true
           try {
             this.countStart = 5
@@ -480,10 +479,10 @@
               } else {
                 wx.connectSocket({
                   url: WSS_DOMAIN + 'operation/' + this.userInfo.id,
-                  header:{
+                  header: {
                     'content-type': 'application/json'
                   },
-                  method:"POST"
+                  method: "POST"
                 })
                 wx.onSocketOpen((res) => {
                   this.socketOpen = true
@@ -529,13 +528,6 @@
         this.$apply()
       },
 
-      test(){
-        if(this.isEnd&&(!this.rolling)){
-          let xyfb = this.xyfb
-          xyfb.clear()
-        }
-      },
-
       ok(){
         this.isEnd = true
         this.speedDown()
@@ -567,50 +559,60 @@
 
     }
 
-    speedDown(){
-      console.log('this.isStart==>',this.isStart)
-      if(this.isStart){
-        if(this.isEnd){
-          if(this.speed == this. highSpeed){
+    speedDown() {
+      console.log('this.isStart==>', this.isStart)
+      if (this.isStart) {
+        if (this.isEnd) {
+          if (this.speed == this.highSpeed) {
             this.speed = this.middleSpeed
             let xyfb = this.xyfb
             xyfb.changeSpeed(this.speed)
-            setTimeout(()=>{this.speedDown()},2000)
-          }else if(this.speed == this.middleSpeed){
+            setTimeout(()=> {
+              this.speedDown()
+            }, 2000)
+          } else if (this.speed == this.middleSpeed) {
             this.speed = this.lowSpeed
             let xyfb = this.xyfb
             xyfb.changeSpeed(this.speed)
-            setTimeout(()=>{this.speedDown()},2000)
-          }else{
+            setTimeout(()=> {
+              this.speedDown()
+            }, 2000)
+          } else {
             console.log('i m speed down')
             this.speed = 0
             let xyfb = this.xyfb
-            setTimeout(()=>{
-              xyfb.changeEnd(this.isEnd,this.money>0)
+            setTimeout(()=> {
+              xyfb.changeEnd(this.isEnd, this.money > 0)
               xyfb.changeSpeed(this.speed)
-            },2000)
+            }, 2000)
           }
         }
-      }else{
-        setTimeout(()=>{this.speedDown()},2000)
+      } else {
+        setTimeout(()=> {
+          this.speedDown()
+        }, 2000)
       }
 
     }
 
-    go(){
-      if(!this.isEnd){
+    go() {
+      if (!this.isEnd) {
         console.log('i m gogogogo')
-        if(this.speed == 0){
+        if (this.speed == 0) {
           this.speed = this.lowSpeed
           let xyfb = this.xyfb
           xyfb.changeSpeed(this.speed)
-          setTimeout(()=>{this.go()},1500)
-        }else if(this.speed == this.lowSpeed){
+          setTimeout(()=> {
+            this.go()
+          }, 1500)
+        } else if (this.speed == this.lowSpeed) {
           this.speed = this.middleSpeed
           let xyfb = this.xyfb
           xyfb.changeSpeed(this.speed)
-          setTimeout(()=>{this.go()},1500)
-        }else{
+          setTimeout(()=> {
+            this.go()
+          }, 1500)
+        } else {
           this.speed = this.highSpeed
           let xyfb = this.xyfb
           xyfb.changeSpeed(this.speed)
@@ -628,28 +630,29 @@
         })
       })
     }
-    onShareAppMessage () {
+
+    onShareAppMessage() {
       const title = this.luckyDip.remark;
       const url = '/pages/gameFin?luckyDipId=' + this.luckyDip.id
       return Tips.share(title, url, title);
     }
 
-    async gameOver(){
+    async gameOver() {
       this.luckyDip = await fubao.fetchLuckyDipById({luckyDipId: this.luckyDip.id})
-      this.remainDip = await fubao.getUserRemainParticipateNum({luckyDipId:this.luckyDip.id})
+      this.remainDip = await fubao.getUserRemainParticipateNum({luckyDipId: this.luckyDip.id})
       let xyfb = this.xyfb
       xyfb.changeLuckyDip(this.luckyDip)
-      setTimeout(()=>{
-                xyfb.stop()
-      },200)
-      if(this.money!=0){
+      setTimeout(()=> {
+        xyfb.stop()
+      }, 200)
+      if (this.money != 0) {
         this.playAudio(gameAudio.recvFubao)
         this.modalVisible = true
         this.isStart = false
 //        wx.showModal({g
 //        console.log('this.modalVisible====>',this.modalVisible)
         this.$apply()
-      }else{
+      } else {
         this.playAudio(gameAudio.recvFu)
         Tips.toast('送您一个福！')
         this.rolling = false
@@ -662,12 +665,6 @@
       this.innerAudioContext.play()
     }
 
-    async refreshDip(){
-      if(this.luckyDip){
-
-      }
-    }
-
     registSocket() {
       if (!this.userInfo) {
         return
@@ -676,10 +673,10 @@
       let userId = this.userInfo.id
       wx.connectSocket({
         url: WSS_DOMAIN + 'operation/' + userId,
-        header:{
+        header: {
           'content-type': 'application/json'
         },
-        method:"POST"
+        method: "POST"
       })
       wx.onSocketOpen((res) => {
         this.socketOpen = true
@@ -715,8 +712,8 @@
       })
     }
 
-    async getRemainDip(){
-      let remainDip = await fubao.getUserRemainParticipateNum({luckyDipId:this.luckyDip.id})
+    async getRemainDip() {
+      let remainDip = await fubao.getUserRemainParticipateNum({luckyDipId: this.luckyDip.id})
       this.remainDip = remainDip
     }
 
@@ -757,7 +754,7 @@
         id: 'first',
         balance: 100.5,
         luckyDip: this.luckyDip,
-        success: ()=>{
+        success: ()=> {
           this.gameOver()
         }
       })

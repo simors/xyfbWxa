@@ -325,12 +325,12 @@ function xyfbGame(opts) {
   }
   //生成定时器
   game.start = ()=> {
-    isEnd = this.isEnd = false    //是否中止
-    hasred = this.hasred = false  //获得红包参数
-    animationR = this.animationR = 0 //动画清空
-    // count = this.count = 0   //计数器清空
-    walkedBox.step = 0   //控制光圈初始位置
-    randomBox()     //初始化格子里面的图标
+    isEnd = this.isEnd = false        //是否结束
+    hasred = this.hasred = false      //获得红包参数
+    animationR = this.animationR = 0  //动画清空
+    // count = this.count = 0         //计数器清空
+    walkedBox.step = 0                //控制光圈初始位置
+    randomBox()                       //初始化格子里面的图标
     loadingClock = setInterval(refresh, config["refreshSpeed"])
     // console.log('loadingClock========>',loadingClock)
   }
