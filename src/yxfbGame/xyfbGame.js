@@ -142,7 +142,7 @@ function xyfbGame(opts) {
   
   function playAudio(audio) {
     innerAudioContext.src = audio
-    setTimeout(() => innerAudioContext.play(), 10)
+    innerAudioContext.play()
   }
 
   function randomBox() {
@@ -177,7 +177,7 @@ function xyfbGame(opts) {
       let isMove = count % (gameSpeed / config["refreshSpeed"])
       if (isMove == 0) {
         walkedBox.step = walkedBox.step + 1
-        setTimeout(() => playAudio(gameAudio.walk), 1)
+        playAudio(gameAudio.walk)
       }
     }
   }

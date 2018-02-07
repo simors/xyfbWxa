@@ -67,6 +67,22 @@
     justify-content: center;
   }
 
+  .money-amount {
+    display: flex;
+    flex-direction: row;
+    font-size: 40rpx;
+    color: white;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .money-icon {
+    width: 40rpx;
+    height: 40rpx;
+    border-radius: 50%;
+    margin-right: 5rpx;
+  }
+
   .userInfoRedNum {
     font-size: 28rpx;
     color: white;
@@ -317,8 +333,8 @@
           <image class="userinfo-avatar" src="{{luckyDip.user.avatar}}"/>
           <text class="userInfoRedNum">{{luckyDip.user.nickname}}发了{{luckyDip.count}}个福包</text>
         </view>
-        <view class="ownerInfo">
-          <image class="userinfo-avatar" src="/asset/png/game_money_mark.png"/>
+        <view class="money-amount">
+          <image class="money-icon" src="/asset/png/game_money_mark.png"/>
           <text class="userInfoRedAmount">{{luckyDip.amount}}</text>
         </view>
       </view>
@@ -326,7 +342,7 @@
         <canvas
             class="canvasStyle"
             canvas-id="first"
-            disable-scroll=true
+            disable-scroll
         >
           <cover-view wx:if="{{modalVisible}}" class="showCover" @tap.stop="closeModal">
               <cover-image class="modalImage" src="/asset/png/popup_game_envelopes.png"/>
@@ -396,11 +412,7 @@
     }
 
     data = {
-      userInfo: {
-        id: '5a60c5ae0b6160004381db7f',
-        avatar: "https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIOKKW6LBI4TUIHNRtjKHY5J4D7BPdfn4zneZUpfOzwL4RiaBujDlJicQdj9J4GJUe48zhWBQmAAsDg/0",
-        nickname: "绿蚁网络科技－杨阳"
-      },
+      userInfo: {},
       ctx: null,
       count: -1,
       walked: 0,
@@ -521,7 +533,6 @@
       },
 
       closeModal(){
-        console.log('here is close')
         this.modalVisible = false
         this.rolling = false
         let xyfb = this.xyfb
@@ -561,7 +572,6 @@
     }
 
     speedDown() {
-      console.log('this.isStart==>', this.isStart)
       if (this.isStart) {
         if (this.isEnd) {
           if (this.speed == this.highSpeed) {
@@ -579,7 +589,6 @@
               this.speedDown()
             }, 2000)
           } else {
-            console.log('i m speed down')
             this.speed = 0
             let xyfb = this.xyfb
             setTimeout(()=> {
@@ -598,7 +607,6 @@
 
     go() {
       if (!this.isEnd) {
-        console.log('i m gogogogo')
         if (this.speed == 0) {
           this.speed = this.lowSpeed
           let xyfb = this.xyfb
@@ -622,7 +630,6 @@
     }
 
     sendDrawLotteryReq() {
-      console.log('send=========>')
       wx.sendSocketMessage({
         data: JSON.stringify({
           type: REQUEST_DRAW_LOTTERY,
@@ -680,7 +687,6 @@
       if (!this.userInfo) {
         return
       }
-      console.log('userInfo', this.userInfo)
       let userId = this.userInfo.id
       wx.connectSocket({
         url: WSS_DOMAIN + 'operation/' + userId,
