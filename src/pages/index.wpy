@@ -246,6 +246,11 @@
           this.payDisabled = false
           return
         }
+        if (Number(this.amount) > 200) {
+          Tips.error('金额不大于200')
+          this.payDisabled = false
+          return
+        }
         if (!this.count) {
           Tips.error('输入福包数量')
           this.payDisabled = false
